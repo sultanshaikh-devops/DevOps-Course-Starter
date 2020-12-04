@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block head %}
+<title>New Task Creation</title>
+{% endblock %}
+
+{% block body %}
+
+<br>
+<h2>New Task:</h2>
+<hr>
+<form action='/' method="POST">
+    <label for="title">Title:</label> 
+    <input class="form-control" type="text" name='title' id='title' placeholder="Title" aria-label="Enter Title">
+    <br>
+    <label for="status">Status (Select One):</label> 
+    <select class="form-control" type="text" name='status' id='status' placeholder="Status" aria-label="Enter Status">
+        <option value="Not Started" selected>Not Started</option>
+        <option value="Completed">Completed</option>
+    </select>
+    <br>
+    <input class="btn btn-success btn-lg" type='submit' value='Add'"">
+    <a class="btn btn-info btn-lg" href="/" role="button">Cancel</a>
+</form>
+</hr>
+
+{% endblock %}
+
