@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block head %}
+<title>Edit Task</title>
+{% endblock %}
+
+{% block body %}
+<br>
+<h2>Edit Task:</h2>
+<hr>
+<form action='/edit/{{task.id}}' method="POST">
+    <label for="title">Title:</label> 
+    <input class="form-control" type="text" name='title' id='title' value="{{task.title}}" aria-label="Enter Title">
+    <br>
+    <label for="status">Status (Select One):</label> 
+    <select class="form-control" type="text" name='status' id='status'>
+        <option value="Not Started">Not Started</option>
+        <option value="Completed">Completed</option>
+    </select>
+    <br>
+    <input class="btn btn-success" type='submit' value='Save'>
+    <a class="btn btn-info" href="/" role="button">Cancel</a>
+</form>
+</hr>
+
+<script>
+    document.getElementById('status').value = "{{task.status}}"
+</script>
+
+{% endblock %}
+

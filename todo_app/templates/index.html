@@ -1,18 +1,63 @@
-{% extends "layout.html" %}
-{% block title %}To-Do App{% endblock %}
+{% extends "Base.html" %}
 
-{% block content %}
-  <div class="jumbotron">
-    <h1 class="display-4">To-Do App</h1>
-    <p class="lead">Just another to-do app.</p>
-  </div>
+{% block body %}
 
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Items</h2>
-      <ul class="list-group mb-4">
-        <!-- List the todo items here -->
-      </ul>
-    </div>
+<div class="row">
+  <div class="col-md-12">
+    <br></br>
+    <h1 style="display:inline"></h1>
+    <a style="display:inline" class="btn btn-success float-right" href="/new">+ New Task</a>
+    <br></br>
+    <input  class="form-control" type="text" id="myInput" onkeyup="searchTask()" placeholder="Search for task.."></input>
+    <br></br>
+    <table id="dtTasks" class="table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
+      <caption></caption>
+      <thead>
+        <tr>
+          <th class="th-sm">#</th>
+          <th class="th-sm">Title</th>
+          <th class="th-sm">Status</th>
+          <th class="th-sm">Actions</th>
+          <th class="th-sm"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in tasks %}
+        <tr>
+          <td>{{ task.id }}</td>
+          <td>{{ task.title }}</td>
+          <td>{{ task.status }}</td>
+          <td><a class="btn btn-outline-success btn-block" href='/edit/{{task.id}}'>Edit</button></td>             
+          <td><a class="btn btn-outline-danger btn-block" href='/delete/{{task.id}}'>Delete</button></td>
+        </tr>
+        {% endfor%}
+      </tbody>
+      <tfoot>
+      </tfoot>
+    </table>
   </div>
+</div>
+
+<script>
+  function searchTask() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("dtTasks");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];;
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }    
+    }
+  }
+  </script>
+  
+
 {% endblock %}
