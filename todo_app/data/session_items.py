@@ -5,13 +5,12 @@ _DEFAULT_ITEMS = [
     { 'id': 2, 'status': 'Not Started', 'title': 'Allow new items to be added' }
 ]
 
+lastid = {'id':2}
+
 def sort(dicts):
     #using sorted and lambda to return list sorted
     #by status (Not Started/Completed)
     return sorted(dicts, key = lambda i: i['status'],reverse=True)
-
-
-
 
 def get_items():
     """
@@ -20,9 +19,8 @@ def get_items():
     Returns:
         list: The list of saved items.
     """
-    All_items = session.get('items', _DEFAULT_ITEMS)
-    sorted_items = sort(All_items)
-    #return session.get('items', _DEFAULT_ITEMS)
+    all_items = session.get('items', _DEFAULT_ITEMS)
+    sorted_items = sort(all_items)
     return sorted_items
 
 
@@ -50,29 +48,18 @@ def add_item(title, status):
     Returns:
         item: The saved item.
     """
+  
     items = get_items()
 
-    # Determine the ID for the item based on that of the previously added item
-    #id = items[-1]['id'] + 1 if items else 0
-    id = 0
-    checkid = []
-    for item in items:
-        checkid.append(item['id'])
-    
-    if items != []:
-        matchfound = True
-        while matchfound:
-            if (id in checkid):
-                #print(str(id) + " found!")
-                id = id + 1
-            else:
-                matchfound = False
-                #print(str(id)) 
+    # Determine the ID: default value is pre set and increased as record is added therefore keep track of last id used.
+   
+    newid = lastid['id'] + 1 
+    lastid['id'] = newid
 
     if status == '': 
-        item = { 'id': id, 'title': title, 'status': 'Not Started' }
+        item = { 'id': newid, 'title': title, 'status': 'Not Started' }
     else:
-        item = { 'id': id, 'title': title, 'status': status}
+        item = { 'id': newid, 'title': title, 'status': status}
 
     # Add the item to the list
     items.append(item)
@@ -105,16 +92,14 @@ def delete_item(id):
     items = get_items()
     indexNumber = find_index(items, 'id', id)
     del items[indexNumber]
-    #updated_items = [item if item['id'] == existing_item['id'] else existing_item for existing_item in existing_items]
 
     session['items'] = items
    
     return items
 
 def find_index(dicts, key, value):
-    class Null: pass
     for i, d in enumerate(dicts):
-        if d.get(key, Null) == value:
+        if d.get(key) == value:
             return i
     else:
         raise ValueError('no dict with the key and value combination found')
