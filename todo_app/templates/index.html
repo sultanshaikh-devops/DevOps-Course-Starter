@@ -14,22 +14,25 @@
       <caption></caption>
       <thead>
         <tr>
-          <th class="th-sm">#</th>
-          <th class="th-sm">Title</th>
-          <th class="th-sm">Status</th>
-          <th class="th-sm">Actions</th>
-          <th class="th-sm"></th>
+          <th class="th-sm" style="display:none">#</th>
+          <th class="th-sm" style="width: 65%">Title</th>
+          <th class="th-sm" style="width: 10%">Due Date</th>
+          <th class="th-sm" style="width: 10%">Status</th>
+          <th class="th-sm" style="width: 15%">Actions</th>
         </tr>
       </thead>
       <tbody>
         {% for task in tasks %}
-        <tr>
-          <td>{{ task.id }}</td>
-          <td>{{ task.title }}</td>
-          <td>{{ task.status }}</td>
-          <td><a class="btn btn-outline-success btn-block" href='/edit/{{task.id}}'>Edit</button></td>             
-          <td><a class="btn btn-outline-danger btn-block" href='/delete/{{task.id}}'>Delete</button></td>
-        </tr>
+          <tr>
+            <td style="display:none">{{ task.id }}</td>
+            <td>{{ task.title }}</td>
+            <td>{{ task.due }}</td>
+            <td>{{ task.status }}</td>
+            <td>
+              <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
+              <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>            
+            </td>             
+          </tr>
         {% endfor%}
       </tbody>
       <tfoot>
@@ -57,7 +60,9 @@
       }    
     }
   }
-  </script>
+
+
+</script>
   
 
 {% endblock %}

@@ -9,13 +9,21 @@
 <hr>
 <form action='/edit/{{task.id}}' method="POST">
     <label for="title">Title:</label> 
-    <input class="form-control" type="text" name='title' id='title' value="{{task.title}}" aria-label="Enter Title">
+    <input class="form-control" type="text" name='title' id='title' value="{{task['title']}}" aria-label="Enter Title">
     <br>
     <label for="status">Status (Select One):</label> 
     <select class="form-control" type="text" name='status' id='status'>
         <option value="Not Started">Not Started</option>
+        <option value="In Progress">In Progress</option>
         <option value="Completed">Completed</option>
     </select>
+    <br>
+    <label for="duedate">Due Date:</label> 
+    <input class="form-control" type="date" id="duedate" name="duedate" value=""> 
+    <br>
+    <label for="descarea">Descriptions:</label> 
+    <input style="white-space: pre-line" class="form-control" type="text" id="descarea" name="descarea" rows="4" aria-label="type task note here..." value="{{task['desc']}}"></textarea>
+    <br>
     <br>
     <input class="btn btn-success" type='submit' value='Save'>
     <a class="btn btn-info" href="/" role="button">Cancel</a>
@@ -23,7 +31,15 @@
 </hr>
 
 <script>
-    document.getElementById('status').value = "{{task.status}}"
+
+    var date = new Date("{{task['due']}}")
+    if (date)
+    {
+        dt = date.toISOString().slice(0,10)
+        document.getElementById('duedate').value = dt
+    }
+    document.getElementById('status').value = "{{task['status']}}"   
+
 </script>
 
 {% endblock %}
