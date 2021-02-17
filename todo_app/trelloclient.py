@@ -1,6 +1,15 @@
 import requests
 import os
 
+class Card:
+    def __init__(self, json, statusName):        
+        self.listid = json['idList']
+        self.id = json['id']                     
+        self.status = statusName
+        self.title = json['name']
+        self.due = json['due']
+        self.desc = json['desc']
+
 class TrelloClient:    
     def __init__(self):
         self.url = os.environ['TRELLO_BASE_URL'] 

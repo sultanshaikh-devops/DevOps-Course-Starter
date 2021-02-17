@@ -118,19 +118,14 @@ def post_index():
 # edit task
 @app.route('/edit/<id>', methods=['GET'])
 def get_edit(id):
-    card_info = []
     card = TrelloCard()
     result = card.get_Card(id=id)
     if (result.status_code == 200):
-        card_info.append ({
-            'listid' : result.json()['idList'],
-            'id' : id,                     
-            'status' : get_statusName(id=result.json()['idList']),
-            'title' : result.json()['name'],
-            'due' : result.json()['due'],
-            'desc' : result.json()['desc']
-        })
-        return render_template('edit.html', task=card_info[0])
+        card_info = Card(
+           json = result.json(),
+           statusName = get_statusName(id=result.json()['idList'])
+        )
+        return render_template('edit.html', task=card_info)
     else:
         return render_template("404.html", error="failed to obtain Trello card info!")
 
