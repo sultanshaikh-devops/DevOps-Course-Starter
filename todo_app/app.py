@@ -1,3 +1,4 @@
+from os import error
 from flask import Flask, render_template, request, redirect
 from todo_app.flask_config import Config
 from todo_app.trelloclient import *
@@ -7,43 +8,65 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 status_mapping = []
+board_Name = "ToDo"
+board_Id = ""
 
-all_boards = TrelloClient.get_boards()
-if all_boards.status_code == 200:
-   for board in all_boards.json():
-      if board['name'] == 'ToDo':
-         board_id = board['id']
+def build_status_mapping():
+    trello_Board = TrelloBoard()
+    result = trello_Board.get_BoardList()
+    if result.status_code == 200:
+        for item in result.json():
+            if item['name'] == board_Name:
+                board_Id = item['id']   
+    else:
+        return render_template("404.html", error="Trello board 'ToDo' not found!")
 
-if not (board_id is None):
-   all_list = TrelloClient.get_lists(boardid=board_id)
-   if all_list.status_code == 200:
-      for item in all_list.json():
-         if item['name'] == "To Do":
-            status_mapping.append ({
-                  'id' : item['id'],
-                  'status' : 'Not Started'
-            })
-         if item['name'] == "Doing":
-            status_mapping.append ({
-                  'id' : item['id'],
-                  'status' : 'In Progress'
-            })
-         if item['name'] == "Done":
-            status_mapping.append ({
-                  'id' : item['id'],
-                  'status' : 'Completed'
-            })
+    if not (board_Id is None):
+        trello_List = TrelloList()
+        lists = trello_List.get_List(id=board_Id)
+        if lists.status_code == 200:
+            for list in lists.json():
+                if list['name'] == 'To Do':
+                    status_mapping.append ({
+                        'id' : list['id'],
+                        'status' : "Not Started"
+                    })
+                elif list['name'] == 'Doing':
+                    status_mapping.append ({
+                        'id' : list['id'],
+                        'status' : "In Progress"
+                    })
+                elif list['name'] == 'Done':
+                    status_mapping.append ({
+                        'id' : list['id'],
+                        'status' : "Completed"
+                    })
+                else:
+                    pass
+                    #do nothing
+        else:
+            return render_template("404.html", error="problem connecting to Trello API endpoint")           
+    else:
+        return render_template("404.html", error="Trello board 'ToDo' not found!") 
 
-def get_listid(listname):
+def get_listId(status):
     for item in status_mapping:
-        if item['status'] == listname:
+        if item['status'] == status:
             listid = item['id']
     return listid
+
+def get_statusName(id):
+    for item in status_mapping:
+        if item['id'] == id:
+            listStatus = item['status']
+    return listStatus
+
+build_status_mapping()
 
 # error handling for 404
 @app.errorhandler(404)
 def not_found(e):
-    return render_template("404.html")
+    return render_template("404.html", error='resource not found!')
 
 @app.route('/contact')
 def contact():
@@ -52,27 +75,25 @@ def contact():
 # default
 @app.route('/', methods=['GET'])
 def get_index():
-    all_tasks = []
-
+    cards = []
     for item in status_mapping:
-        todotask = TrelloClient.list_card(listid = item['id'])
-
-        if todotask.status_code == 200:
-            for task in todotask.json():
-                if not (task['due'] is None):
-                    formated_date = (task['due']).split("T")[0]
+        list_cards = TrelloCard()
+        result = list_cards.get_List(id = item['id']) 
+        if result.status_code == 200:
+            for card in result.json():
+                if not (card['due'] is None):
+                    formated_date = (card['due']).split("T")[0]
                 else:
-                    formated_date = task['due']
-                all_tasks.append ({
-                    'id' : task['id'],
-                    'title': task['name'],
+                    formated_date = card['due']
+                cards.append ({
+                    'id' : card['id'],
+                    'title': card['name'],
                     'status' : item['status'],
                     'due' : formated_date
                 })
         else:
-            print("Problem getting To Do List")
-    
-    return render_template('index.html', tasks=all_tasks)
+            return render_template("404.html",error="failed to get Trello cards!")    
+    return render_template('index.html', tasks=cards)
 
 # new task
 @app.route('/new', methods=['GET'])
@@ -81,59 +102,62 @@ def getnew_post():
 
 @app.route('/', methods=['POST'])
 def post_index():    
-    task_title = request.form['title']
-    listId = get_listid(listname='Not Started')
-    due = request.form['duedate']
-    desc = request.form['descarea']
-    new_card = TrelloClient.create_card(cardname=task_title, listid=listId, desc=desc, due=due)
-    if (new_card.status_code == 200):
+    card = TrelloCard()
+    result = card.create_Card(
+        name = request.form['title'],
+        due = request.form['duedate'],
+        desc = request.form['descarea'],
+        id = get_listId(status='Not Started')
+    )
+    
+    if (result.status_code == 200):
         return redirect('/')
     else:
-        return render_template("404.html")
-
-# delete task
-@app.route('/delete/<id>')
-def delete(id):
-    result = TrelloClient.delete_card(cardid=id)
-    if result.status_code == 200:
-        return redirect('/')
-    else:
-        return render_template("404.html")
+        return render_template("404.html",error="failed to create Trello card!")
 
 # edit task
 @app.route('/edit/<id>', methods=['GET'])
 def get_edit(id):
-    task = []    
-    result  = TrelloClient.get_card(cardid=id)
+    card_info = []
+    card = TrelloCard()
+    result = card.get_Card(id=id)
     if (result.status_code == 200):
-        for item in status_mapping:
-            if item['id'] == result.json()['idList']:
-                task.append ({
-                    'listid' : item['id'],
-                    'id' : id,                     
-                    'status' : item['status'],
-                    'title' : result.json()['name'],
-                    'due' : result.json()['due'],
-                    'desc' : result.json()['desc']
-                })
-                return render_template('edit.html', task=task[0])
+        card_info.append ({
+            'listid' : result.json()['idList'],
+            'id' : id,                     
+            'status' : get_statusName(id=result.json()['idList']),
+            'title' : result.json()['name'],
+            'due' : result.json()['due'],
+            'desc' : result.json()['desc']
+        })
+        return render_template('edit.html', task=card_info[0])
     else:
-        return render_template("404.html")
+        return render_template("404.html", error="failed to obtain Trello card info!")
 
 @app.route('/edit/<id>', methods=['POST'])
 def post_edit(id):
-    name = request.form['title']
-    status = request.form['status']
-    due = request.form['duedate']
-    desc = request.form['descarea']
+    card = TrelloCard()
+    result = card.update_Card(
+        id = id,
+        listId = get_listId(status=request.form['status']),
+        name = request.form['title'],
+        desc = request.form['descarea'],
+        due = request.form['duedate']
+    )
+    if result.status_code == 200:
+        return redirect('/')
+    else:
+        return render_template("404.html", error="failed to update Trello card!")
 
-    for item in status_mapping:
-        if status == item['status']:
-            update_card = TrelloClient.update_card(cardid=id,cardname=name,carddesc=desc,listid=item['id'],duedate=due)
-            if update_card.status_code == 200:
-                return redirect('/')
-            else:
-                return render_template("404.html")
+# delete task
+@app.route('/delete/<id>')
+def delete(id):
+    card = TrelloCard()
+    result = card.delete_Card(id=id)
+    if result.status_code == 200:
+        return redirect('/')
+    else:
+        return render_template("404.html",error="failed to delete Trello card!")
 
 
 if __name__ == '__main__':

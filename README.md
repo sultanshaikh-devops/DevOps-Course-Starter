@@ -38,7 +38,7 @@ The `.env` file is used by flask to set environment variables when running `flas
      a. To Do
      b. Doing
      c. Done
-3. Add following variables file witin `.env` file.
+3. Add following variables to `.env` file.
     1. TRELLO_API_KEY={YOUR API KEY}
     2. TRELLO_API_SECRET={YOUR API SECRET} 
     3. TRELLO_BASE_URL=https://api.trello.com/1/
@@ -46,7 +46,7 @@ The `.env` file is used by flask to set environment variables when running `flas
 
 ## Running the App
 
-Once the all dependencies have been installed, start the Flask app in development mode within the poetry environment by running:
+Once the all dependencies have been installed and configured, start the Flask app in development mode within the poetry environment by running:
 ```bash
 $ poetry run flask run
 ```

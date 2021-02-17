@@ -1,145 +1,97 @@
 import requests
-import os 
+import os
 
-class TrelloClient(object):
+class TrelloClient:    
+    def __init__(self):
+        self.url = os.environ['TRELLO_BASE_URL'] 
+        self.key = os.environ['TRELLO_API_KEY']
+        self.token = os.environ['TRELLO_API_SECRET']
+        self.header = "application/json"
 
-    def list_card(listid):
-        url = os.environ['TRELLO_BASE_URL'] + 'lists/' + listid + '/cards'
-
-        query = {
-            'key': os.environ['TRELLO_API_KEY'],
-            'token': os.environ['TRELLO_API_SECRET']
+        self.headers = {
+            "Accept": self.header
         }
 
+        self.query = {
+            'key' : self.key,
+            'token': self.token
+        }
+
+class TrelloBoard(TrelloClient):
+    def get_BoardList(self):
         response = requests.request(
             "GET",
-            url,
-            params=query
+            self.url + 'members/me/boards/all',
+            headers=self.headers,
+            params=self.query
         )
+        return response
 
-        return response        
+class TrelloList(TrelloClient):
+    def get_List(self, id):
+        response = requests.request(
+            "GET",
+            self.url + 'boards/' + id + '/lists',
+            headers=self.headers,
+            params=self.query
+        )
+        return response
+
+class TrelloCard(TrelloClient):
+    def get_List(self, id):
+        response = requests.request(
+            "GET",
+            self.url + 'lists/' + id + '/cards',
+            headers=self.headers,
+            params=self.query
+        )
+        return response
     
-    def create_card(cardname, listid, desc, due):
-        url = os.environ['TRELLO_BASE_URL'] + 'cards'
-        query = {
-            'key': os.environ['TRELLO_API_KEY'],
-            'token': os.environ['TRELLO_API_SECRET'],
-            'idList': {listid},
-            'name': {cardname},
-            'desc': {desc},
-            'due': {due}
-        }
+    def get_Card(self, id):
+        response = requests.request(
+            "GET",
+            self.url + 'cards/' + id,
+            headers=self.headers,
+            params=self.query
+        )
+        return response       
+
+    def create_Card(self, id, name, desc, due):
+        query = self.query
+        query['idList'] = id
+        query['name'] = name
+        query['desc'] = desc
+        query['due'] = due
 
         response = requests.request(
             "POST",
-            url,
+            self.url + 'cards',
+            headers=self.headers,
             params=query
         )
+        return response   
 
-        return response
-
-    def delete_card(cardid):
-        url = os.environ['TRELLO_BASE_URL'] + 'cards/' + cardid
-
-        query = {
-            'key': os.environ['TRELLO_API_KEY'],
-            'token': os.environ['TRELLO_API_SECRET']
-        }
-
-        response = requests.request(
-            "DELETE",
-            url,
-            params=query
-        )
-
-        return response
-
-    def update_card(cardid, cardname, carddesc, listid, duedate):
-        url = os.environ['TRELLO_BASE_URL'] + 'cards/' + cardid
-
-        headers = {
-            "Accept": "application/json"
-        }
-
-        query = {
-            'key': os.environ['TRELLO_API_KEY'],
-            'token': os.environ['TRELLO_API_SECRET'],
-            'name': {cardname},
-            'desc': {carddesc},
-            'idList': {listid},
-            'due': {duedate}
-        }
+    def update_Card(self, id, listId, name, desc, due):
+        query = self.query
+        query['idList'] = listId
+        query['name'] = name
+        query['desc'] = desc
+        query['due'] = due
 
         response = requests.request(
             "PUT",
-            url,
-            headers=headers,
+            self.url + 'cards/' + id,
+            headers=self.headers,
             params=query
         )
+        return response 
 
-        return response
-
-    def get_card(cardid):
-        url = os.environ['TRELLO_BASE_URL'] + 'cards/' + cardid
-
-        headers = {
-            "Accept": "application/json"
-        }
-
-        query = {
-            'key': os.environ['TRELLO_API_KEY'],
-            'token': os.environ['TRELLO_API_SECRET']
-        }
-
+    def delete_Card(self, id):
         response = requests.request(
-            "GET",
-            url,
-            headers=headers,
-            params=query
+            "DELETE",
+            self.url + 'cards/' + id,
+            headers=self.headers,
+            params=self.query
         )
-
-        return response
-
-    def get_boards():
-
-        url = os.environ['TRELLO_BASE_URL'] + 'members/me/boards/all'
-
-        headers = {
-            "Accept": "application/json"
-        }
-
-        query = {
-            'key': os.environ['TRELLO_API_KEY'],
-            'token': os.environ['TRELLO_API_SECRET']
-        }
-
-        response = requests.request(
-            "GET",
-            url,
-            headers=headers,
-            params=query
-        )
-
-        return response
-
-    def get_lists(boardid):
-
-        url = os.environ['TRELLO_BASE_URL'] + 'boards/' + boardid + '/lists'
-
-        headers = {
-            "Accept": "application/json"
-        }
-
-        query = {
-            'key': os.environ['TRELLO_API_KEY'],
-            'token': os.environ['TRELLO_API_SECRET']
-        }
-
-        response = requests.request(
-            "GET",
-            url,
-            headers=headers,
-            params=query
-        )
-
-        return response
+        return response 
+        
