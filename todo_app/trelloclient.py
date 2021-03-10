@@ -2,17 +2,22 @@ import requests
 import os
 
 class Card:
-    def __init__(self, json, statusName):        
-        self.listid = json['idList']
-        self.id = json['id']                     
-        self.status = statusName
-        self.title = json['name']
-        self.due = json['due']
-        self.desc = json['desc']
+    def __init__(self, card, statuslabel):
+        self.listid = card['idList']
+        self.id = card['id']                     
+        self.status = statuslabel
+        self.title = card['name']
+        self.due = card['due']
+        self.desc = card['desc']        
 
-class TrelloClient:    
+class StatusMapping:
+    def __init__(self, id, status):
+        self.id = id
+        self.status = status
+
+class Connection():    
     def __init__(self):
-        self.url = os.environ['TRELLO_BASE_URL'] 
+        self.url = 'https://api.trello.com/1/' 
         self.key = os.environ['TRELLO_API_KEY']
         self.token = os.environ['TRELLO_API_SECRET']
         self.header = "application/json"
@@ -26,8 +31,8 @@ class TrelloClient:
             'token': self.token
         }
 
-class TrelloBoard(TrelloClient):
-    def get_BoardList(self):
+class Board(Connection):
+    def get_AllBoardList(self):
         response = requests.request(
             "GET",
             self.url + 'members/me/boards/all',
@@ -35,9 +40,9 @@ class TrelloBoard(TrelloClient):
             params=self.query
         )
         return response
-
-class TrelloList(TrelloClient):
-    def get_List(self, id):
+    
+class BoardList(Connection):
+    def get_BoardLists(self, id):
         response = requests.request(
             "GET",
             self.url + 'boards/' + id + '/lists',
@@ -45,9 +50,8 @@ class TrelloList(TrelloClient):
             params=self.query
         )
         return response
-
-class TrelloCard(TrelloClient):
-    def get_List(self, id):
+    
+    def get_ListCards(self, id):
         response = requests.request(
             "GET",
             self.url + 'lists/' + id + '/cards',
@@ -63,14 +67,14 @@ class TrelloCard(TrelloClient):
             headers=self.headers,
             params=self.query
         )
-        return response       
+        return response  
 
     def create_Card(self, id, name, desc, due):
         query = self.query
         query['idList'] = id
         query['name'] = name
         query['desc'] = desc
-        query['due'] = due
+        query['due'] = due 
 
         response = requests.request(
             "POST",
