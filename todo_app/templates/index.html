@@ -8,7 +8,7 @@
     <h1 style="display:inline"></h1>
     <a style="display:inline" class="btn btn-success float-right" href="/new">+ New Task</a>
     <br></br>
-    <input  class="form-control" type="text" id="myInput" onkeyup="searchTask()" placeholder="Search for task.."></input>
+    <input class="form-control" type="text" id="myInput" onkeyup="searchTask()" placeholder="Search for task.."></input>
     <br></br>
     <table id="dtTasks" class="table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
       <caption></caption>
@@ -22,17 +22,17 @@
         </tr>
       </thead>
       <tbody>
-        {% for task in tasks %}
-          <tr>
-            <td style="display:none">{{ task.id }}</td>
-            <td>{{ task.title }}</td>
-            <td>{{ task.due }}</td>
-            <td>{{ task.status }}</td>
-            <td>
-              <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
-              <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>            
-            </td>             
-          </tr>
+        {% for task in view_model._items %}
+        <tr>
+          <td style="display:none">{{ task.id }}</td>
+          <td>{{ task.title }}</td>
+          <td>{{ task.due }}</td>
+          <td>{{ task.status }}</td>
+          <td>
+            <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
+              <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
+          </td>
+        </tr>
         {% endfor%}
       </tbody>
       <tfoot>
@@ -57,12 +57,12 @@
         } else {
           tr[i].style.display = "none";
         }
-      }    
+      }
     }
   }
 
 
 </script>
-  
+
 
 {% endblock %}

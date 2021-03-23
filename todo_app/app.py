@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect
 from todo_app.flask_config import Config
 from todo_app.trelloclient import *
+from todo_app.view import *
 
 
 app = Flask(__name__)
@@ -79,7 +80,9 @@ def get_index():
                 cardslist.append( Card(card=card, statuslabel=item.status) )    
         else:
             return render_template("error.html",error="failed to get Trello cards!")    
-    return render_template('index.html', tasks=cardslist)
+    #return render_template('index.html', tasks=cardslist)
+    item_view_model = ViewModel(cardslist)
+    return render_template('index.html', view_model=item_view_model)
 
 # new task
 @app.route('/new', methods=['GET'])
