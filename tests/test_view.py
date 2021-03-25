@@ -1,8 +1,7 @@
 """Unit tests for view.py"""
 
-import pytest
-
-from todo_app.view import *
+#import pytest
+from todo_app.view import ViewModel
 
 def test_viewmodel_filterToDo_only():
     emptyViewModel = ViewModel([])
