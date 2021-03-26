@@ -2,7 +2,8 @@ import os
 from flask import Flask, render_template, request, redirect
 from todo_app.flask_config import Config
 from todo_app.trelloclient import *
-from todo_app.view import *
+from todo_app.view import ViewModel
+from todo_app.models.card import Card
 
 
 app = Flask(__name__)
@@ -13,7 +14,7 @@ board_Name = os.environ['TRELLO_BOARD_NAME']
 board_Id = ""
 
 def build_status_mapping():
-    cboard = Board()
+    cboard = TrelloClient()
     result = cboard.get_AllBoardList()
     if result.status_code == 200:
         for item in result.json():
@@ -24,16 +25,16 @@ def build_status_mapping():
         raise SystemExit
 
     if not (board_Id is None):
-        cboardlist = BoardList()
-        boardlists = cboardlist.get_BoardLists(id=board_Id)
-        if boardlists.status_code == 200:
-            for list in boardlists.json():
+        cTrelloClient = TrelloClient()
+        TrelloClients = cTrelloClient.get_BoardLists(id=board_Id)
+        if TrelloClients.status_code == 200:
+            for list in TrelloClients.json():
                 if list['name'] == 'To Do':
-                    statusMappingList.append(StatusMapping(id=list['id'], status='Not Started'))
+                    statusMappingList.append(StatusMapping(list_id=list['id'], status='Not Started'))
                 elif list['name'] == 'Doing':
-                    statusMappingList.append(StatusMapping(id=list['id'], status='In Progress'))
+                    statusMappingList.append(StatusMapping(list_id=list['id'], status='In Progress'))
                 elif list['name'] == 'Done':
-                    statusMappingList.append(StatusMapping(id=list['id'], status='Completed'))
+                    statusMappingList.append(StatusMapping(list_id=list['id'], status='Completed'))
                 else:
                     pass  #do nothing
         else:            
@@ -46,12 +47,12 @@ def build_status_mapping():
 def get_listId(status):
     for item in statusMappingList:
         if item.status == status:
-            listid = item.id
+            listid = item.list_id
     return listid
 
-def get_statusLabel(id):
+def get_statusLabel(list_id):
     for item in statusMappingList:
-        if item.id == id:
+        if item.list_id == list_id:
             listStatus = item.status
     return listStatus
 
@@ -70,14 +71,15 @@ def contact():
 @app.route('/', methods=['GET'])
 def get_index():
     cardslist = []
-    for item in statusMappingList:
-        cbl_board = BoardList()
-        result = cbl_board.get_ListCards(item.id)    
+    for status_mapping in statusMappingList:
+        cbl_board = TrelloClient()
+        result = cbl_board.get_ListCards(status_mapping.list_id)    
         if result.status_code == 200:
             for card in result.json():
                 if not (card['due'] is None):
                     card['due'] = (card['due']).split("T")[0]
-                cardslist.append( Card(card=card, statuslabel=item.status) )    
+                card['dateLastActivity'] = (card['dateLastActivity']).split("T")[0]
+                cardslist.append( Card(card=card, statuslabel=status_mapping.status) )    
         else:
             return render_template("error.html",error="failed to get Trello cards!")    
     #return render_template('index.html', tasks=cardslist)
@@ -91,7 +93,7 @@ def getnew_post():
 
 @app.route('/', methods=['POST'])
 def post_index():    
-    cbl = BoardList()
+    cbl = TrelloClient()
     result = cbl.create_Card(
         name = request.form['title'],
         due = request.form['duedate'],
@@ -107,12 +109,12 @@ def post_index():
 # edit task
 @app.route('/edit/<id>', methods=['GET'])
 def get_edit(id):
-    cbl = BoardList()
+    cbl = TrelloClient()
     result = cbl.get_Card(id=id)
     if (result.status_code == 200):
         card_info = Card(
            card = result.json(),
-           statuslabel = get_statusLabel(id=result.json()['idList'])
+           statuslabel = get_statusLabel(result.json()['idList'])
         )
         return render_template('edit.html', task=card_info)
     else:
@@ -120,7 +122,7 @@ def get_edit(id):
 
 @app.route('/edit/<id>', methods=['POST'])
 def post_edit(id):
-    cbl = BoardList()
+    cbl = TrelloClient()
     result = cbl.update_Card(
         id = id,
         listId = get_listId(status=request.form['status']),
@@ -136,7 +138,7 @@ def post_edit(id):
 # delete task
 @app.route('/delete/<id>')
 def delete(id):
-    cbl = BoardList()
+    cbl = TrelloClient()
     result = cbl.delete_Card(id=id)
     if result.status_code == 200:
         return redirect('/')
