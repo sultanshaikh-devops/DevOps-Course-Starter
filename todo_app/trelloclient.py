@@ -24,8 +24,7 @@ class Connection():
 
 class TrelloClient(Connection):
     def get_AllBoardList(self):
-        response = requests.request(
-            "GET",
+        response = requests.get(
             self.url + 'members/me/boards/all',
             headers=self.headers,
             params=self.query
@@ -33,17 +32,15 @@ class TrelloClient(Connection):
         return response
         
     def get_BoardLists(self, id):
-        response = requests.request(
-            "GET",
-            self.url + 'boards/' + id + '/lists',
+        response = requests.get(
+            f"{self.url}boards/{id}/lists",
             headers=self.headers,
             params=self.query
         )
         return response
     
     def get_ListCards(self, id):
-        response = requests.request(
-            "GET",
+        response = requests.get(
             self.url + 'lists/' + id + '/cards',
             headers=self.headers,
             params=self.query
@@ -51,8 +48,7 @@ class TrelloClient(Connection):
         return response
     
     def get_Card(self, id):
-        response = requests.request(
-            "GET",
+        response = requests.get(
             self.url + 'cards/' + id,
             headers=self.headers,
             params=self.query
