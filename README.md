@@ -64,8 +64,10 @@ You should see output similar to the following:
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
 
 ## Running Pytest
+    Make sure you have firefox browser install 
     run poetry install
     run poetry update
+    download geckodriver.exe and place in root of 'DEVOPS-COURSE-STARTER' folder    
 
   for running unit and integration testing 
     poetry run pytest tests
