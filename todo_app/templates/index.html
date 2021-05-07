@@ -25,7 +25,7 @@
       </thead>
       <tbody>
         {% for task in view_model.todo %}
-        <tr>
+        <tr class="to-do-task">
           <td style="display:none">{{ task.id }}</td>
           <td>{{ task.title }}</td>
           <td>{{ task.due }}</td>
