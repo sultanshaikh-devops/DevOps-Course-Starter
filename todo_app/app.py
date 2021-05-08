@@ -1,14 +1,8 @@
 import os
 from flask import Flask, render_template, request, redirect
-#from todo_app.flask_config import Config
 from todo_app.trelloclient import *
 from todo_app.view import ViewModel
 from todo_app.models.card import Card
-
-
-#app = Flask(__name__)
-#app.config.from_object(Config)
-
 
 def create_app():
     app = Flask(__name__)
@@ -88,9 +82,42 @@ def create_app():
                     cardslist.append( Card(card=card, statuslabel=status_mapping.status) )    
             else:
                 return render_template("error.html",error="failed to get Trello cards!")    
-        #return render_template('index.html', tasks=cardslist)
         item_view_model = ViewModel(cardslist)
         return render_template('index.html', view_model=item_view_model)
+
+    @app.route('/getpreviousdonetasks', methods=['GET'])
+    def get_previous_done_tasks():
+        cardslist = []
+        for status_mapping in statusMappingList:
+            cbl_board = TrelloClient()
+            result = cbl_board.get_ListCards(status_mapping.list_id)    
+            if result.status_code == 200:
+                for card in result.json():
+                    if not (card['due'] is None):
+                        card['due'] = (card['due']).split("T")[0]
+                    card['dateLastActivity'] = (card['dateLastActivity']).split("T")[0]
+                    cardslist.append( Card(card=card, statuslabel=status_mapping.status) )    
+            else:
+                return render_template("error.html",error="failed to get Trello cards!")    
+        item_view_model = ViewModel(cardslist)
+        return render_template('previous_done_task.html', view_model=item_view_model)
+    
+    @app.route('/gettodaydonetasks', methods=['GET'])
+    def get_today_done_tasks():
+        cardslist = []
+        for status_mapping in statusMappingList:
+            cbl_board = TrelloClient()
+            result = cbl_board.get_ListCards(status_mapping.list_id)    
+            if result.status_code == 200:
+                for card in result.json():
+                    if not (card['due'] is None):
+                        card['due'] = (card['due']).split("T")[0]
+                    card['dateLastActivity'] = (card['dateLastActivity']).split("T")[0]
+                    cardslist.append( Card(card=card, statuslabel=status_mapping.status) )    
+            else:
+                return render_template("error.html",error="failed to get Trello cards!")    
+        item_view_model = ViewModel(cardslist)
+        return render_template('today_done_task.html', view_model=item_view_model)
 
     # new task
     @app.route('/new', methods=['GET'])
