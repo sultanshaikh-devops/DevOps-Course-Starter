@@ -121,3 +121,6 @@ env/
 
 ### vagrant files ###
 .vagrant
+
+###log file ##
+gunicorn_daemon.log
