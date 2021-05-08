@@ -1,0 +1,68 @@
+[2021-05-08 21:50:04 +0000] [879] [INFO] Starting gunicorn 20.1.0
+[2021-05-08 21:50:04 +0000] [879] [INFO] Listening at: http://0.0.0.0:5000 (879)
+[2021-05-08 21:50:04 +0000] [879] [INFO] Using worker: sync
+[2021-05-08 21:50:04 +0000] [880] [INFO] Booting worker with pid: 880
+[2021-05-08 21:50:05 +0000] [880] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/util.py", line 412, in import_app
+    app = app(*args, **kwargs)
+  File "/vagrant/todo_app/app.py", line 9, in create_app
+    app.config.from_object('todo_app.flask_config.Config')
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/flask/config.py", line 174, in from_object
+    obj = import_string(obj)
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/werkzeug/utils.py", line 568, in import_string
+    __import__(import_name)
+  File "/vagrant/todo_app/flask_config.py", line 4, in <module>
+    class Config:
+  File "/vagrant/todo_app/flask_config.py", line 8, in Config
+    raise ValueError("No SECRET_KEY set for Flask application. Did you follow the setup instructions?")
+ValueError: No SECRET_KEY set for Flask application. Did you follow the setup instructions?
+[2021-05-08 21:50:05 +0000] [880] [INFO] Worker exiting (pid: 880)
+[2021-05-08 21:50:05 +0000] [879] [INFO] Shutting down: Master
+[2021-05-08 21:50:05 +0000] [879] [INFO] Reason: Worker failed to boot.
+[2021-05-08 21:58:06 +0000] [952] [INFO] Starting gunicorn 20.1.0
+[2021-05-08 21:58:06 +0000] [952] [INFO] Listening at: http://0.0.0.0:5000 (952)
+[2021-05-08 21:58:06 +0000] [952] [INFO] Using worker: sync
+[2021-05-08 21:58:06 +0000] [953] [INFO] Booting worker with pid: 953
+[2021-05-08 21:58:06 +0000] [953] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/arbiter.py", line 589, in spawn_worker
+    worker.init_process()
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/workers/base.py", line 134, in init_process
+    self.load_wsgi()
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/workers/base.py", line 146, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/gunicorn/util.py", line 412, in import_app
+    app = app(*args, **kwargs)
+  File "/vagrant/todo_app/app.py", line 9, in create_app
+    app.config.from_object('todo_app.flask_config.Config')
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/flask/config.py", line 174, in from_object
+    obj = import_string(obj)
+  File "/home/vagrant/.cache/pypoetry/virtualenvs/todo-app-vs8V2ZPt-py3.9/lib/python3.9/site-packages/werkzeug/utils.py", line 568, in import_string
+    __import__(import_name)
+  File "/vagrant/todo_app/flask_config.py", line 4, in <module>
+    class Config:
+  File "/vagrant/todo_app/flask_config.py", line 8, in Config
+    raise ValueError("No SECRET_KEY set for Flask application. Did you follow the setup instructions?")
+ValueError: No SECRET_KEY set for Flask application. Did you follow the setup instructions?
+[2021-05-08 21:58:06 +0000] [953] [INFO] Worker exiting (pid: 953)
+[2021-05-08 21:58:06 +0000] [952] [INFO] Shutting down: Master
+[2021-05-08 21:58:06 +0000] [952] [INFO] Reason: Worker failed to boot.
