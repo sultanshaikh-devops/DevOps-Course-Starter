@@ -510,3 +510,13 @@ console.warn: SearchSettings: "get: No settings file exists, new profile?" (new 
 1620485537035	Marionette	WARN	TLS certificate errors will be ignored for this session
 JavaScript error: http://localhost:5000/edit/6096a5a3c85fb883f1f56844, line 79: RangeError: invalid date
 1620485544596	Marionette	INFO	Stopped listening on port 56204
+1620512258176	geckodriver	INFO	Listening on 127.0.0.1:52690
+1620512261205	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Sultan\\AppData\\Local\\Temp\\rust_mozprofileNcF7DX"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1620512267316	Marionette	INFO	Listening on port 52698
+1620512267538	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: http://localhost:5000/edit/60970e0def09dd2cebaa9544, line 79: RangeError: invalid date
+1620512274193	Marionette	INFO	Stopped listening on port 52698
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
