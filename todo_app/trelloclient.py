@@ -1,18 +1,9 @@
 import requests
-import os
-
-class Card:
-    def __init__(self, card, statuslabel):
-        self.listid = card['idList']
-        self.id = card['id']                     
-        self.status = statuslabel
-        self.title = card['name']
-        self.due = card['due']
-        self.desc = card['desc']        
+import os  
 
 class StatusMapping:
-    def __init__(self, id, status):
-        self.id = id
+    def __init__(self, list_id, status):
+        self.list_id = list_id
         self.status = status
 
 class Connection():    
@@ -31,29 +22,25 @@ class Connection():
             'token': self.token
         }
 
-class Board(Connection):
+class TrelloClient(Connection):
     def get_AllBoardList(self):
-        response = requests.request(
-            "GET",
+        response = requests.get(
             self.url + 'members/me/boards/all',
             headers=self.headers,
             params=self.query
         )
         return response
-    
-class BoardList(Connection):
+        
     def get_BoardLists(self, id):
-        response = requests.request(
-            "GET",
-            self.url + 'boards/' + id + '/lists',
+        response = requests.get(
+            f"{self.url}boards/{id}/lists",
             headers=self.headers,
             params=self.query
         )
         return response
     
     def get_ListCards(self, id):
-        response = requests.request(
-            "GET",
+        response = requests.get(
             self.url + 'lists/' + id + '/cards',
             headers=self.headers,
             params=self.query
@@ -61,8 +48,7 @@ class BoardList(Connection):
         return response
     
     def get_Card(self, id):
-        response = requests.request(
-            "GET",
+        response = requests.get(
             self.url + 'cards/' + id,
             headers=self.headers,
             params=self.query
