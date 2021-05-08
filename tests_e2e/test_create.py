@@ -1,6 +1,7 @@
 import os, pytest, requests, time
 from threading import Thread
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
 from dotenv import find_dotenv, load_dotenv
 import todo_app.app as app
 
@@ -54,9 +55,9 @@ def app_with_temp_board():
     thread.join(1)
     del_board_response = delete_trello_board(board_id)
     if del_board_response.status_code == 200:
-        print(f'Board deleted: {board_id}' + 'status: ' + del_board_response.status_code)
+        print(f'Board deleted passed {del_board_response.status_code}')
     else:
-        print(f'Board delete failed : {board_id}' + 'status: ' + del_board_response.status_code)
+        print(f'Board delete failed {del_board_response.status_code}')
 
 @pytest.fixture(scope="module")
 def driver():
@@ -65,11 +66,8 @@ def driver():
 
 #test entries
 def test_task_journey(driver, app_with_temp_board):
-    #Waiting for application to be ready for use due to lag
-    #time.sleep(3)​
     driver.get('http://localhost:5000/')
     assert driver.title == 'To-Do App' 
-
 
 def test_create_task(driver, app_with_temp_board):
     #time.sleep(3)​
@@ -89,15 +87,13 @@ def test_complete_task(driver, app_with_temp_board):
     updatestatus = driver.find_element_by_xpath("//a[contains(text(), 'Edit')]")
     updatestatus.click()
     status_element = driver.find_element_by_id('status')
-    status_element.send_keys('Completed')
+    status_element.send_keys('In Progress')
     status_element.submit()
     driver.implicitly_wait(3)
-    assert "Completed" in driver.page_source
+    assert "In Progress" in driver.page_source
 
 def test_delete_task(driver, app_with_temp_board):
-    delete_button = driver.find_element_by_xpath("//a[contains(text(), 'Delete')]")
-    delete_button.click()
-    driver.implicitly_wait(3)
+    driver.find_element_by_xpath("//a[contains(text(), 'Delete')]").click()   
     assert "E2E Testing Task 1" not in driver.page_source
 
 

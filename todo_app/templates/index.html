@@ -6,74 +6,81 @@
   <div class="col-md-12">
     <br></br>
     <h1 style="display:inline"></h1>
-    <a style="display:inline" class="btn btn-success float-right" href="/new">+ New Task</a>
+    
+    <a style="display:inline" class="btn btn-success float-right" href="/new">+ New Task</a> 
+    <a style="display:inline" class="btn btn-outline-secondary float-left" href="/getpreviousdonetasks">Show older done tasks</a>
+    <a style="display:inline" class="btn btn-outline-secondary float-left" href="/gettodaydonetasks">Show today done tasks</a>
+
     <br></br>
     <input class="form-control" type="text" id="myInput" onkeyup="searchTask()" placeholder="Search for task.."></input>
     <br></br>
-  
-    <summary>To Do</summary> 
-    <table id="dtToDo" class="table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
-      <caption></caption>
-      <thead>
-        <tr>
-          <th class="th-sm" style="display:none">#</th>
-          <th class="th-sm" style="width: 65%">Title</th>
-          <th class="th-sm" style="width: 10%">Due Date</th>
-          <th class="th-sm" style="width: 10%">Status</th>
-          <th class="th-sm" style="width: 15%">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for task in view_model.todo %}
-        <tr class="to-do-task">
-          <td style="display:none">{{ task.id }}</td>
-          <td>{{ task.title }}</td>
-          <td>{{ task.due }}</td>
-          <td>{{ task.status }}</td>
-          <td>
-            <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
+
+    <details open>
+      <summary>TO DO</summary>
+      <table id="dtToDo" class="table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
+        <caption></caption>
+        <thead>
+          <tr>
+            <th class="th-sm" style="display:none">#</th>
+            <th class="th-sm" style="width: 65%">Title</th>
+            <th class="th-sm" style="width: 10%">Due Date</th>
+            <th class="th-sm" style="width: 10%">Status</th>
+            <th class="th-sm" style="width: 15%">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in view_model.todo %}
+          <tr class="to-do-task">
+            <td style="display:none">{{ task.id }}</td>
+            <td>{{ task.title }}</td>
+            <td>{{ task.due }}</td>
+            <td>{{ task.status }}</td>
+            <td>
+              <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
               <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
-          </td>
-        </tr>
-        {% endfor%}
-      </tbody>
-      <tfoot>
-      </tfoot>
-    </table>
+            </td>
+          </tr>
+          {% endfor%}
+        </tbody>
+        <tfoot>
+        </tfoot>
+      </table>
+    </details>
+
+    <details open>
+      <summary>DOING</summary>
+      <table id="dtDoing" class="table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
+        <caption></caption>
+        <thead>
+          <tr>
+            <th class="th-sm" style="display:none">#</th>
+            <th class="th-sm" style="width: 65%">Title</th>
+            <th class="th-sm" style="width: 10%">Due Date</th>
+            <th class="th-sm" style="width: 10%">Status</th>
+            <th class="th-sm" style="width: 15%">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in view_model.doing %}
+          <tr>
+            <td style="display:none">{{ task.id }}</td>
+            <td>{{ task.title }}</td>
+            <td>{{ task.due }}</td>
+            <td>{{ task.status }}</td>
+            <td>
+              <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
+                <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
+            </td>
+          </tr>
+          {% endfor%}
+        </tbody>
+        <tfoot>
+        </tfoot>
+      </table>
+    </details>
     
-
-    <summary>Doing</summary>
-    <table id="dtDoing" class="table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
-      <caption></caption>
-      <thead>
-        <tr>
-          <th class="th-sm" style="display:none">#</th>
-          <th class="th-sm" style="width: 65%">Title</th>
-          <th class="th-sm" style="width: 10%">Due Date</th>
-          <th class="th-sm" style="width: 10%">Status</th>
-          <th class="th-sm" style="width: 15%">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for task in view_model.doing %}
-        <tr>
-          <td style="display:none">{{ task.id }}</td>
-          <td>{{ task.title }}</td>
-          <td>{{ task.due }}</td>
-          <td>{{ task.status }}</td>
-          <td>
-            <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
-              <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
-          </td>
-        </tr>
-        {% endfor%}
-      </tbody>
-      <tfoot>
-      </tfoot>
-    </table>
-
-    <details>
-      <summary>Done-Today</summary>
+    <details open>
+      <summary>RECENT</summary>
       <table id="dtDone" class="table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
       <caption></caption>
       <thead>
@@ -94,70 +101,7 @@
           <td>{{ task.status }}</td>
           <td>
             <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
-              <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
-          </td>
-        </tr>
-        {% endfor%}
-      </tbody>
-      <tfoot>
-      </tfoot>
-      </table>
-    </details>
-
-    <details>
-      <summary>Done - Recent Tasks</summary>
-      <table id="dtDone" class="table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
-      <caption></caption>
-      <thead>
-        <tr>
-          <th class="th-sm" style="display:none">#</th>
-          <th class="th-sm" style="width: 65%">Title</th>
-          <th class="th-sm" style="width: 10%">Due Date</th>
-          <th class="th-sm" style="width: 10%">Status</th>
-          <th class="th-sm" style="width: 15%">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for task in view_model.recent_done_items %}
-        <tr>
-          <td style="display:none">{{ task.id }}</td>
-          <td>{{ task.title }}</td>
-          <td>{{ task.due }}</td>
-          <td>{{ task.status }}</td>
-          <td>
-            <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
-              <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
-          </td>
-        </tr>
-        {% endfor%}
-      </tbody>
-      <tfoot>
-      </tfoot>
-      </table>
-    </details>
-    <details>
-      <summary>Done - Show all older tasks</summary>
-      <table id="dtDone" class="table-bordered table-hover table-striped table-sm" cellspacing="0" width="100%">
-      <caption></caption>
-      <thead>
-        <tr>
-          <th class="th-sm" style="display:none">#</th>
-          <th class="th-sm" style="width: 65%">Title</th>
-          <th class="th-sm" style="width: 10%">Due Date</th>
-          <th class="th-sm" style="width: 10%">Status</th>
-          <th class="th-sm" style="width: 15%">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for task in view_model.older_done_items %}
-        <tr>
-          <td style="display:none">{{ task.id }}</td>
-          <td>{{ task.title }}</td>
-          <td>{{ task.due }}</td>
-          <td>{{ task.status }}</td>
-          <td>
-            <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
-              <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
+            <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
           </td>
         </tr>
         {% endfor%}
@@ -176,6 +120,34 @@
     input = document.getElementById("myInput");
     filter = input.value.toUpperCase();
     table = document.getElementById("dtToDo");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];;
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+
+    table = document.getElementById("dtDoing");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];;
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+
+    table = document.getElementById("dtDone");
     tr = table.getElementsByTagName("tr");
     for (i = 0; i < tr.length; i++) {
       td = tr[i].getElementsByTagName("td")[1];;

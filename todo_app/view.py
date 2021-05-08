@@ -20,7 +20,6 @@ class ViewModel:
 
     @property
     def recent_done_items(self):
-        #_done_ls = [item for item in self._items if item.status == "Completed"]
         _done_ls = [item for item in self._items if item.dateLastActivity == str(datetime.datetime.today()).split()[0] and item.status == "Completed"]
         return _done_ls
     
@@ -35,6 +34,5 @@ class ViewModel:
 
     @property
     def older_done_items(self):
-       # _done_ls = [item for item in self._items if item.status == "Completed"]
         _done_ls = [item for item in self._items if item.dateLastActivity != str(datetime.datetime.today()).split()[0] and item.status == "Completed"]
         return _done_ls
