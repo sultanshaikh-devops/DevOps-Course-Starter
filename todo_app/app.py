@@ -10,9 +10,10 @@ def create_app():
 
     statusMappingList = []
     board_Name = os.environ['TRELLO_BOARD_NAME']
-    board_Id = ""
+
 
     def build_status_mapping():
+        board_Id = ""
         cboard = TrelloClient()
         result = cboard.get_AllBoardList()
         if result.status_code == 200:
@@ -25,9 +26,9 @@ def create_app():
 
         if not (board_Id is None):
             cTrelloClient = TrelloClient()
-            TrelloClients = cTrelloClient.get_BoardLists(id=board_Id)
-            if TrelloClients.status_code == 200:
-                for list in TrelloClients.json():
+            response = cTrelloClient.get_BoardLists(id=board_Id)
+            if response.status_code == 200:
+                for list in response.json():
                     if list['name'] == 'To Do':
                         statusMappingList.append(StatusMapping(list_id=list['id'], status='Not Started'))
                     elif list['name'] == 'Doing':
