@@ -40,7 +40,7 @@ def app_with_temp_board():
         board_name = 'E2E Testing'
         os.environ['TRELLO_BOARD_NAME'] = board_name 
     else:
-        print('create board failure' + create_board_response.status_code)
+        print(f'create board failure {create_board_response.status_code}')
     
     # construct the new application
     application = app.create_app()
