@@ -520,3 +520,13 @@ JavaScript error: http://localhost:5000/edit/60970e0def09dd2cebaa9544, line 79: 
 
 ###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
 
+1620647296210	geckodriver	INFO	Listening on 127.0.0.1:52413
+1620647299244	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Sultan\\AppData\\Local\\Temp\\rust_mozprofile8eunfu"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1620647302617	Marionette	INFO	Listening on port 52424
+1620647302960	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: http://localhost:5000/edit/60991d89a5c4ba353d1dc5e6, line 79: RangeError: invalid date
+1620647310810	Marionette	INFO	Stopped listening on port 52424
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+

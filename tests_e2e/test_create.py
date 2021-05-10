@@ -95,5 +95,3 @@ def test_complete_task(driver, app_with_temp_board):
 def test_delete_task(driver, app_with_temp_board):
     driver.find_element_by_xpath("//a[contains(text(), 'Delete')]").click()   
     assert "E2E Testing Task 1" not in driver.page_source
-
-
