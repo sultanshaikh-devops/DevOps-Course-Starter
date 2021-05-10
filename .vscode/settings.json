@@ -5,7 +5,7 @@
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
-    "python.pythonPath": ".venv\\Scripts\\python.exe",
+    "python.pythonPath": "C:\\Users\\Sultan\\AppData\\Local\\pypoetry\\Cache\\virtualenvs\\todo-app-4_7iQs12-py3.9\\Scripts\\python.exe",
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#65c89b",
         "activityBar.activeBorder": "#945bc4",
