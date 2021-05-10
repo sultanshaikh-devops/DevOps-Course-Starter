@@ -5,7 +5,7 @@
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
-    "python.pythonPath": ".venv\\Scripts\\python.exe",
+    "python.pythonPath": "C:\\Python39\\python.exe",
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#65c89b",
         "activityBar.activeBorder": "#945bc4",
