@@ -1,0 +1,10 @@
+1620647091639	geckodriver	INFO	Listening on 127.0.0.1:52171
+1620647094670	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "-foreground" "-no-remote" "-profile" "C:\\Users\\Sultan\\AppData\\Local\\Temp\\rust_mozprofile1kAOd9"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1620647098132	Marionette	INFO	Listening on port 52179
+1620647098380	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: http://localhost:5000/edit/60991cbc6612b66c1722e7a3, line 79: RangeError: invalid date
+1620647107823	Marionette	INFO	Stopped listening on port 52179
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
