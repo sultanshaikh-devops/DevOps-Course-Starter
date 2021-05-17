@@ -1,16 +1,14 @@
 #exclude folder at root level
-.github?
-.pytest_cache?
-.vagrant?
-.vscode?
-tests?
-test_e2e?
-#*/__pycache_*
-#*/data*
-#*/models*
+.github
+.pytest_cache
+.vagrant
+.vscode
+tests
+test_e2e
+*/__pycache_*
 
 #exclude root level files
-.env.t?
-.gitignore?
-geckod?
-vagrant?
+.env*
+.gitignore
+geckod*
+vagrant*

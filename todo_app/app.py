@@ -9,7 +9,7 @@ def create_app():
     app.config.from_object('todo_app.flask_config.Config')
 
     statusMappingList = []
-    board_Name = os.environ['TRELLO_BOARD_NAME']
+    board_Name = os.environ['TRELLO_BOARD_NAME']   
     
     def build_status_mapping():
         board_Id = ""

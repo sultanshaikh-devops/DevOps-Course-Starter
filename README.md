@@ -2,27 +2,10 @@
 
 ## System Requirements
 
-The project uses poetry for Python to create an isolated environment and manage package dependencies. To prepare your system, ensure you have an official distribution of Python version 3.7+ and install poetry using one of the following commands (as instructed by the [poetry documentation](https://python-poetry.org/docs/#system-requirements)):
-
-### Poetry installation (Bash)
-
-```bash
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-```
-
-### Poetry installation (PowerShell)
-
-```powershell
-(Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py -UseBasicParsing).Content | python
-```
+This project uses docker to create isolated environments and manage package dependencies using poetry. To prepare your system, ensure you have an official Docker Desktop install.
+[Docker Download](https://www.docker.com/products/docker-desktop) [instruction for Windows OS](https://docs.docker.com/docker-for-windows/install/)
 
 ## Dependencies
-
-The project uses a virtual environment to isolate package dependencies. To create the virtual environment and install required packages, run the following from your preferred shell:
-
-```bash
-$ poetry install
-```
 
 You'll also need to clone a new `.env` file from the `.env.template` to store local configuration options. This is a one-time operation on first setup:
 
@@ -30,7 +13,8 @@ You'll also need to clone a new `.env` file from the `.env.template` to store lo
 $ cp .env.template .env  # (first time only)
 ```
 
-The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like development mode (which also enables features like hot reloading when you make a file change). There's also a [SECRET_KEY](https://flask.palletsprojects.com/en/1.1.x/config/#SECRET_KEY) variable which is used to encrypt the flask session cookie.
+The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like development mode (which also enables features like hot reloading when you make a file change). There's also a [SECRET_KEY]
+) variable which is used to encrypt the flask session cookie.
 
 ## Setting up for trello.com
 1. Create a Board.
@@ -43,7 +27,23 @@ The `.env` file is used by flask to set environment variables when running `flas
     2. TRELLO_API_SECRET={YOUR API SECRET} 
     3. TRELLO_BOARD_NAME={YOUR TRELLO BOARD NAME}
 
+## Running Production Docker Instance
+After downloading git repo, change directory to location where Dockerfile resides.
+[Docker Build Comnmand](docker build --target production --tag todo-app:prod .)
 
+For command below replace "ROOT FOLDER LOCATION OF YOUR PROJECT REPO" (example: C:\Work\Module_1_Project\DevOps-Course-Starter\)
+[Docker run command] (docker run -p 5000:5000 --env-file .env --mount type=bind,source=ROOT FOLDER LOCATION OF YOUR PROJECT REPO,target=/app todo-app:prod)
+
+
+## Running Development Docker Instance
+After downloading git repo, change directory to location where Dockerfile resides.
+[Docker Build Comnmand](docker build --target development --tag todo-app:dev .)
+
+For command below replace "ROOT FOLDER LOCATION OF YOUR PROJECT REPO" (example: C:\Work\Module_1_Project\DevOps-Course-Starter\)
+[Docker run command] (docker run -p 5000:5000 --env-file .env --mount type=bind,source=ROOT FOLDER LOCATION OF YOUR PROJECT REPO,target=/app todo-app:dev)
+
+
+###################################################################################################################
 ## Running the App on your local machine without virtualBox
 
 Update file poetry.toml

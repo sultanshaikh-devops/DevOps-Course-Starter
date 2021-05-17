@@ -1,0 +1,15 @@
+docker build --tag todo-app .
+docker-compose build --no-cache
+docker run todo-app
+docker run -dp 5000:5000 todo-app
+
+docker run -p 5000:5000 --env-file .env --mount type=bind,source=C:\Work\Module_1_Project\DevOps-Course-Starter\,target=/app todo-app:dev
+
+docker run -p 5000:5000 --env-file .env --mount type=bind,source=C:\Work\Module_1_Project\DevOps-Course-Starter\,target=/app todo-app:prod
+
+$ docker build --target development --tag todo-app:dev .
+$ docker build --target production --tag todo-app:prod .
+
+
+$ docker run --env-file ./.env -p 5100:80 --mount type=bind,source="$(pwd)"/
+todo_app,target=/app/todo_app todo-app:dev
