@@ -68,8 +68,11 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
     run 'poetry install'
     download geckodriver.exe and place in root of 'DEVOPS-COURSE-STARTER' folder    
 
+  to all tests same time 
+    poetry run pytest
+
   for running unit and integration testing 
-    poetry run pytest tests (will attempt to run all but tests_e2e will fail)
+    poetry run pytest tests 
 
   for running end_2_end testing 
     poetry run pytest tests_e2e
