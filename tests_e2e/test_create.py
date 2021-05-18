@@ -7,22 +7,20 @@ from dotenv import find_dotenv, load_dotenv
 import todo_app.app as app
 
 BASE_URL = "https://api.trello.com/1/"
-API_KEY = os.environ.get('TRELLO_API_KEY')
-TOKEN = os.environ.get('TRELLO_API_SECRET')
 
-def create_trello_board():
+def create_trello_board(key,token):
     params = {
-        'key': API_KEY,
-        'token': TOKEN,
+        'key': key,
+        'token': token,
         'name': "E2E Testing",
     }
     response = requests.post(BASE_URL + 'boards', params=params)
     return response
 
-def delete_trello_board(board_id):
+def delete_trello_board(board_id,key,token):
     params = {
-        'key': API_KEY,
-        'token': TOKEN,
+        'key': key,
+        'token': token,
     }
     response = requests.delete(BASE_URL + f'boards/{board_id}', params=params)
     return response
@@ -32,9 +30,12 @@ def app_with_temp_board():
     # Loading environment variables 
     file_path = find_dotenv('.env')
     load_dotenv(file_path, override=True)
+    
+    API_KEY = os.environ.get('TRELLO_API_KEY')
+    TOKEN = os.environ.get('TRELLO_API_SECRET')
 
     # Create the new board and save env to file     
-    create_board_response = create_trello_board()
+    create_board_response = create_trello_board(key=API_KEY,token=TOKEN)
     if create_board_response.status_code == 200:
         os.environ['TRELLO_BOARD_ID'] = create_board_response.json()['id']
         board_name = 'E2E Testing'
@@ -53,7 +54,7 @@ def app_with_temp_board():
 
     # Tear Down
     thread.join(1)
-    del_board_response = delete_trello_board(os.environ.get('TRELLO_BOARD_ID'))
+    del_board_response = delete_trello_board(os.environ.get('TRELLO_BOARD_ID'),key=API_KEY,token=TOKEN)
     if del_board_response.status_code == 200:
         print(f'Board deleted passed {del_board_response.status_code}')
     else:
