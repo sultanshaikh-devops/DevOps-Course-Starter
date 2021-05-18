@@ -124,7 +124,7 @@ def client():
 @pytest.fixture
 def mock_getrequest():
     with patch('requests.get') as mock_get:
-        mock_get.side_effect = mock_get_lists
+        mock_get.side_effect = mock_requests_get
         yield mock_get
 
 def test_index_page(mock_getrequest, client):
@@ -134,7 +134,7 @@ def test_index_page(mock_getrequest, client):
     assert 'failure test' not in response.data.decode()
 
 
-def mock_get_lists(url, headers, params):
+def mock_requests_get(url, headers, params):
     if url == f'https://api.trello.com/1/members/me/boards/all':
         response = Mock()
         response.status_code = 200

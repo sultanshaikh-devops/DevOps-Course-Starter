@@ -3,6 +3,7 @@
 #import pytest
 from todo_app.view import ViewModel
 from todo_app.models.card import Card
+import datetime
 
 sample_data = [
     {"idList": "123", "id":"1", "name":"Task1", "due":"2021-05-30", "dateLastActivity":"2021-05-16", "desc":"", "status":"Not Started"},
@@ -11,7 +12,7 @@ sample_data = [
     {"idList": "123", "id":"4", "name":"Task4", "due":"2021-05-30", "dateLastActivity":"2021-03-16", "desc":"", "status":"Not Started"},
     {"idList": "123", "id":"5", "name":"Task5", "due":"2021-05-30", "dateLastActivity":"2021-04-16", "desc":"", "status":"In Progress"},
     {"idList": "123", "id":"6", "name":"Task6", "due":"2021-01-30", "dateLastActivity":"2021-05-16", "desc":"", "status":"Completed"},
-    {"idList": "123", "id":"7", "name":"Task7", "due":"2021-05-21", "dateLastActivity":"2021-05-18", "desc":"", "status":"Completed"}
+    {"idList": "123", "id":"7", "name":"Task7", "due":"2021-05-21", "dateLastActivity":str(datetime.datetime.today()).split()[0], "desc":"", "status":"Completed"}
 ]
 
 cardslist = []
