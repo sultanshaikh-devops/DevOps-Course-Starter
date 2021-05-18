@@ -44,7 +44,10 @@ The `.env` file is used by flask to set environment variables when running `flas
     3. TRELLO_BOARD_NAME={YOUR TRELLO BOARD NAME}
 
 
-## Running the App
+## Running the App on your local machine without virtualBox
+
+Update file poetry.toml
+  change in-project to in-project = true
 
 Once the all dependencies have been installed and configured, start the Flask app in development mode within the poetry environment by running:
 ```bash
@@ -76,4 +79,15 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 
   for running end_2_end testing 
     poetry run pytest tests_e2e
+
+## Running the App on your virtualBox
+
+ensure poetry.toml
+  in-project set to in-project = true
+
+1. Install VirtualBox on your local PC.
+2. Change your directory to where Vagrantfile is located 
+3. type vagrant up and wait until installation completes
+4. Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
+6. type vagrant destroy (Destroys the VM. It will be fully recreated the next time you run vagrant up.)
 
