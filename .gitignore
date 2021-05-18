@@ -115,6 +115,15 @@ dmypy.json
 ### Virtual environment ###
 env/
 .venv/
+.vscode/
 
 ### Configuration files ###
 .env
+
+### vagrant files ###
+.vagrant
+
+### log file ###
+gunicorn_daemon.log
+geckodriver.log
+geckodriver.exe
