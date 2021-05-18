@@ -125,4 +125,5 @@ env/
 
 ### log file ###
 gunicorn_daemon.log
+geckodriver.log
 geckodriver.exe
