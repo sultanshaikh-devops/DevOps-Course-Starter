@@ -10,7 +10,6 @@ def create_app():
 
     statusMappingList = []
     board_Name = os.environ['TRELLO_BOARD_NAME']
-    
     def build_status_mapping():
         board_Id = ""
         cboard = TrelloClient()

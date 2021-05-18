@@ -68,12 +68,14 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 
 ## Running Pytest
     Make sure you have firefox browser install 
-    poetry install
-    poetry update
+    run 'poetry install'
     download geckodriver.exe and place in root of 'DEVOPS-COURSE-STARTER' folder    
 
+  to all tests same time 
+    poetry run pytest
+
   for running unit and integration testing 
-    poetry run pytest tests
+    poetry run pytest tests 
 
   for running end_2_end testing 
     poetry run pytest tests_e2e
