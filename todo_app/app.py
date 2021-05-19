@@ -58,7 +58,7 @@ def create_app():
     build_status_mapping()
 
 
-    # error handling for 404
+    #error handling for 404
     @app.errorhandler(404)
     def not_found(e):
         return render_template("error.html", error='resource not found!')
@@ -67,7 +67,7 @@ def create_app():
     def contact():
         return render_template('contact.html')
 
-    # default
+    #default
     @app.route('/', methods=['GET'])
     def get_index():
         cardslist = []
@@ -177,8 +177,6 @@ def create_app():
             return redirect('/')
         else:
             return render_template("error.html",error="failed to delete Trello card!")
-
-
 
     return app
 

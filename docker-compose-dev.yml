@@ -1,0 +1,35 @@
+version: "3.3" 
+
+services:
+  devapp:
+    container_name: todo-app-dev
+    build:      
+      context: .
+      dockerfile: Dockerfile
+      target: development
+      args: 
+        - PYTHON_VERSION=3.9-slim-buster
+    image: todo-app-dev:latest
+    volumes: 
+      - type: bind
+        source: ${PROJECT_FOLDER}
+        target: /app
+    ports:
+      - 5000:5000
+    entrypoint: poetry run flask run --host 0.0.0.0
+  
+  testapp:
+    container_name: todo-app-test
+    build:      
+      context: .
+      dockerfile: Dockerfile
+      target: test
+      args: 
+        - PYTHON_VERSION=3.9-slim-buster
+    image: todo-app-test:latest
+    volumes: 
+      - type: bind
+        source: ${PROJECT_FOLDER}
+        target: /app    
+    entrypoint: watchmedo shell-command -c='poetry run pytest' -p='*.py;*.html;*.txt' -D -R -w --debug-force-polling '/app'
+    

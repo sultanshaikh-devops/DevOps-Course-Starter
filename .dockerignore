@@ -11,4 +11,7 @@ test_e2e
 .env*
 .gitignore
 geckod*
+gunicorn*
+vagrant*
+docker*.yaml
 vagrant*
