@@ -47,6 +47,11 @@ This project uses docker to create isolated environments and manage package depe
 
   | ***Please note:*** UAT container runs continuous unit, integration and end-to-end tests whenever it detects a change to the source files (*.py, *.html, *.txt). To view output, open a new terminal and type <mark>docker logs todo-app-test --tail 50 -f</mark> 
 
+  + Useful docker commands for clean up
+    + docker stop todo-app-dev || docker stop todo-app-test || docker stop todo-app-prod
+    + docker rm todo-app-dev || docker rm todo-app-test || docker rm todo-app-prod
+    + docker rmi todo-app-test:latest || docker rmi todo-app-dev:latest || docker rmi todo-app-prod:latest
+  
 ---
 
 >## Running App Without VirtualBox
