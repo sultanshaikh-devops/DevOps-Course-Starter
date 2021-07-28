@@ -9,9 +9,6 @@ services:
       context: .
       dockerfile: Dockerfile
       target: production
-      args: 
-        - PYTHON_VERSION=3.9-slim-buster
     image: todo-app-prod:latest
     ports:
       - 5001:5000
-    entrypoint: poetry run gunicorn 'todo_app.app:create_app()' --bind 0.0.0.0:5000

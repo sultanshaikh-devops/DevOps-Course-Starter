@@ -1,5 +1,4 @@
-ARG PYTHON_VERSION
-FROM python:${PYTHON_VERSION} AS base
+FROM python:3.9-slim-buster AS base
 
 #Set envrioment variables 
 ENV POETRY_HOME="/opt/poetry"
@@ -16,18 +15,21 @@ WORKDIR /app
 COPY poetry.lock /app
 COPY poetry.toml /app
 COPY pyproject.toml /app
+RUN poetry config virtualenvs.create false
 
 #Production Stage
 FROM base as production
 RUN poetry install --no-root --no-dev
 COPY . /app
 EXPOSE 5000
+ENTRYPOINT poetry run gunicorn 'todo_app.app:create_app()' --bind 0.0.0.0:5000
 
 #Development Stage
 FROM base as development
 RUN poetry install
 ENV FLASK_DEBUG=1
 EXPOSE 5000
+ENTRYPOINT poetry run flask run --host 0.0.0.0
 
 #Test Stage
 FROM base as test
@@ -44,3 +46,4 @@ RUN wget --no-verbose -O geckodriver.tar.gz https://github.com/mozilla/geckodriv
   && ln -fs /opt/geckodriver /usr/bin/geckodriver
 
 EXPOSE 5000
+ENTRYPOINT poetry run watchmedo shell-command -c='poetry run pytest' -p='*.py;*.html;*.txt' -D -R -w --debug-force-polling '/app'

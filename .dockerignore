@@ -12,6 +12,5 @@ test_e2e
 .gitignore
 geckod*
 gunicorn*
-vagrant*
 docker*.yaml
 vagrant*

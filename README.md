@@ -25,8 +25,7 @@ This project uses docker to create isolated environments and manage package depe
     ```
     1. TRELLO_API_KEY={YOUR API KEY}
     2. TRELLO_API_SECRET={YOUR API SECRET} 
-    3. TRELLO_BOARD_NAME={YOUR TRELLO BOARD NAME}
-    4. PROJECT_FOLDER={LOCATION TO PROJECT FOLDER} 
+    3. TRELLO_BOARD_NAME={YOUR TRELLO BOARD NAME} 
     ```
 
 ---
