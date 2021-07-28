@@ -95,6 +95,8 @@ def test_complete_task(driver, app_with_temp_board):
 
 @pytest.mark.depends(on=['test_complete_task'])
 def test_delete_task(driver, app_with_temp_board):
-    driver.find_element_by_xpath("//a[contains(text(), 'Delete')]").click()   
-    assert "E2E Testing Task 1" not in driver.page_source
+    delete = driver.find_element_by_xpath("//a[contains(text(), 'Delete')]")
+    delete.click()
+    driver.implicitly_wait(3)   
+    assert "E2E Testing Task 2" not in driver.page_source
 
