@@ -127,3 +127,4 @@ env/
 gunicorn_daemon.log
 geckodriver.log
 geckodriver.exe
+docker_notes.txt
