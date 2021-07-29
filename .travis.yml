@@ -9,7 +9,7 @@ before_install:
 - docker build -t todo-app-test:latest .
 
 script:
-- docker run --name TODO-APP -dp 5000:5000 todo-app-test:latest
+- docker run --env TRELLO_API_SECRET=${TRELLO_API_SECRET} --env TRELLO_API_KEY=${TRELLO_API_KEY} --env TRELLO_BOARD_NAME={TRELLO_BOARD_NAME} --name TODO-APP -dp 5000:5000 todo-app-test:latest
 - echo "***** Running unit and integration tests **** "
 - docker exec -t -i TODO-APP sh -c "poetry run pytest tests"
 - docker exec -t -i TODO-APP sh -c "poetry run pytest tests_e2e"
