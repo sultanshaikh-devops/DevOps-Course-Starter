@@ -7,12 +7,13 @@ service:
 
 before_install:
 - env > .env
+- cat .env
 - docker build -t todo-app-test:latest .
 
 script:
 #- env > env_file
-- docker run --env-file .env --name TODO-APP -dp 5000:5000 todo-app-test:latest
-#- docker run --name TODO-APP -dp 5000:5000 todo-app-test:latest
+#- docker run --env-file .env --name TODO-APP -dp 5000:5000 todo-app-test:latest
+- docker run --name TODO-APP -dp 5000:5000 todo-app-test:latest
 - docker exec -t -i TODO-APP sh -c "poetry run pytest tests"
 - docker exec -t -i TODO-APP sh -c "poetry run pytest tests_e2e"
 
