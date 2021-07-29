@@ -11,10 +11,6 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 #Set working directory
 WORKDIR /app
 
-#copy poetry *.toml files
-#COPY poetry.lock /app
-#COPY poetry.toml /app
-#COPY pyproject.toml /app
 COPY . /app
 RUN poetry config virtualenvs.create false
 
