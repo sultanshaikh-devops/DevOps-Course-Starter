@@ -17,6 +17,20 @@ COPY poetry.toml /app
 COPY pyproject.toml /app
 RUN poetry config virtualenvs.create false
 
+#Production Stage
+FROM base as production
+RUN poetry install --no-root --no-dev
+COPY . /app
+EXPOSE 5000
+ENTRYPOINT poetry run gunicorn 'todo_app.app:create_app()' --bind 0.0.0.0:5000
+
+#Development Stage
+FROM base as development
+RUN poetry install
+ENV FLASK_DEBUG=1
+EXPOSE 5000
+ENTRYPOINT poetry run flask run --host 0.0.0.0
+
 #Test Stage
 FROM base as test
 RUN apt-get install -y firefox-esr

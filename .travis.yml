@@ -6,4 +6,5 @@ service:
 - docker
 
 script:
-- echo "Hello World"
+- docker build -t todo-app-test:latest .
+- docker run -dp 5000:5000 todo-app-test:latest
