@@ -3,12 +3,12 @@
 .pytest_cache
 .vagrant
 .vscode
-tests
-test_e2e
+#tests
+#test_e2e
 */__pycache_*
 
 #exclude root level files
-.env*
+#.env*
 .gitignore
 geckod*
 gunicorn*
