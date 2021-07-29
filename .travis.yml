@@ -4,7 +4,10 @@ sudo: required
 
 service:
 - docker
+- docker-compose
 
 script:
 - docker build -t todo-app-test:latest .
-- docker run -dp 5000:5000 todo-app-test:latest
+- docker run --name TODO-APP -dp 5000:5000 todo-app-test:latest
+- sudo docker exec –it TODO-APP /bin/bash
+- poetry run pytest
