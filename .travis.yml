@@ -11,7 +11,7 @@ before_install:
 
 script:
 #- env > env_file
-- docker run --env-file env_file --name TODO-APP -dp 5000:5000 todo-app-test:latest
+- docker run --env-file .env --name TODO-APP -dp 5000:5000 todo-app-test:latest
 #- docker run --name TODO-APP -dp 5000:5000 todo-app-test:latest
 - docker exec -t -i TODO-APP sh -c "poetry run pytest tests"
 - docker exec -t -i TODO-APP sh -c "poetry run pytest tests_e2e"
