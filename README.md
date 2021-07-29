@@ -1,4 +1,9 @@
+
 # DevOps Apprenticeship: Project Exercise
+
+[![Build Status](https://travis-ci.com/sultanshaikh-devops/DevOps-Course-Starter.svg?branch=master)](https://travis-ci.com/sultanshaikh-devops/DevOps-Course-Starter)
+![GitHub](https://img.shields.io/github/license/sultanshaikh-devops/DevOps-Course-Starter)
+![GitHub last commit](https://img.shields.io/github/last-commit/sultanshaikh-devops/DevOps-Course-Starter)
 
 ## System Requirements
 ---

@@ -16,3 +16,10 @@ script:
 
 after_success:
 - echo "All done!"
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+  slack: corndeldevops-jul3809:75aSeUKEXlO7OZDFCTNoke3J
+
