@@ -9,4 +9,5 @@ service:
 script:
 - docker build -t todo-app-test:latest .
 - docker run --name TODO-APP -dp 5000:5000 todo-app-test:latest
-- docker exec -t -i TODO-APP sh -c "ls -l && poetry run pytest"
+- echo "***** Running unit and integration tests **** "
+- docker exec -t -i TODO-APP sh -c "ls -l && poetry run pytest tests"
