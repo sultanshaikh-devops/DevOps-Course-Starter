@@ -6,13 +6,15 @@ service:
 - docker
 
 before_install:
-- env > .env
+#- env > .env
 - docker build -t todo-app-test:latest .
 
 script:
-- docker run --name TODO-APP -dp 5000:5000 todo-app-test:latest
-- docker exec -t -i TODO-APP sh -c "poetry run pytest tests"
-- docker exec -t -i TODO-APP sh -c "poetry run pytest tests_e2e"
+- docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY --entrypoint "poetry run pytest tests" todo-app-test:latest
+#- docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY todo-app-test:latest
+#- docker run --name TODO-APP -dp 5000:5000 todo-app-test:latest
+#- docker exec -t -i TODO-APP sh -c "poetry run pytest tests"
+#- docker exec -t -i TODO-APP sh -c "poetry run pytest tests_e2e"
 
 after_success:
 - echo "All done!"

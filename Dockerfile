@@ -28,5 +28,4 @@ RUN wget --no-verbose -O geckodriver.tar.gz https://github.com/mozilla/geckodriv
   && chmod 755 /opt/geckodriver \
   && ln -fs /opt/geckodriver /usr/bin/geckodriver
 
-EXPOSE 5000
 ENTRYPOINT poetry run watchmedo shell-command -c='poetry run pytest' -p='*.py;*.html;*.txt' -D -R -w --debug-force-polling '/app'
