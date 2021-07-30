@@ -5,6 +5,23 @@
 ![GitHub](https://img.shields.io/github/license/sultanshaikh-devops/DevOps-Course-Starter)
 ![GitHub last commit](https://img.shields.io/github/last-commit/sultanshaikh-devops/DevOps-Course-Starter)
 
+## Module 7 
+---
+To validate Module 7 project work, follow the steps below:
+  + Make a Fork within GitHub from this branch
+  + Ensure you have setup free account with travis CI (https://travis-ci.com/) and linked your GITHUB account.
+  + Ensure you have your own personal slack account and to create required webhook (https://api.slack.com/app)
+  + Create following environment variables from repository settings 
+    ```bash
+    SLACK_WEBHOOK=
+    TRELLO_API_KEY=
+    SECRET_KEY=
+    TRELLO_API_SECRET=
+    TRELLO_BOARD_NAME=ToDo
+    ```
+  + Good to go!
+
+
 ## System Requirements
 ---
 This project uses docker to create isolated environments and manage package dependencies using poetry. To prepare your system, ensure you have an official Docker Desktop install.

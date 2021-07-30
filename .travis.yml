@@ -9,7 +9,7 @@ before_install:
 - docker build -t todo-app-test:latest .
 
 script:
-- docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY -e SECRET_KEY -e TRELLO_BOARD_NAME --entrypoint poetry todo-app-test:latest run pytest tests
+- docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY -e SECRET_KEY -e TRELLO_BOARD_NAME --entrypoint poetry todo-app-test:latest run pytest test
 
 after_success:
 - echo "All done!"
@@ -18,6 +18,5 @@ notifications:
   email:
     on_success: never
     on_failure: always
-  slack:
-    secure: SLACK_WEBHOOK
-
+  slack: corndeldevops-jul3809:75aSeUKEXlO7OZDFCTNoke3J
+  
