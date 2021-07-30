@@ -18,5 +18,6 @@ notifications:
   email:
     on_success: never
     on_failure: always
-  slack: SLACK_WEBHOOK
+  slack:
+    secure: SLACK_WEBHOOK
 
