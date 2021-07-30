@@ -17,7 +17,6 @@ To validate Module 7 project work, follow the steps below:
     TRELLO_API_KEY=
     SECRET_KEY=
     TRELLO_API_SECRET=
-    TRELLO_BOARD_NAME=ToDo
     ```
   + Good to go!
 

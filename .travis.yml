@@ -10,7 +10,6 @@ before_install:
 
 script:
 - docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY -e SECRET_KEY --entrypoint poetry todo-app-test:latest run pytest
-#- docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY -e SECRET_KEY --entrypoint poetry todo-app-test:latest run pytest tests_e2e
 
 after_success:
 - echo "All done!"
