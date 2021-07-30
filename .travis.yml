@@ -1,22 +1,19 @@
 language: bash
-
 sudo: required
-
 service:
 - docker
-
 before_install:
 - docker build -t todo-app-test:latest .
-
 script:
-- docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY -e SECRET_KEY --entrypoint poetry todo-app-test:latest run pytest
-
+- docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY -e SECRET_KEY --entrypoint poetry
+  todo-app-test:latest run pytest
 after_success:
 - echo "All done!"
-
 notifications:
   email:
     on_success: never
     on_failure: always
-  slack: corndeldevops-jul3809:75aSeUKEXlO7OZDFCTNoke3J
-
+  slack:
+    secure: ADVu2xTUsv5r455+0gTPzuPn9VZlTd4YyT6CEWWlfGlwRrrxNYC+On/6vV/pfkqWkRNNzaFtbINoAP7T3XGzlHhOqrOR1KowCMnK4Eez2SbOB6IKIECshcgfCcHDCleLmJsajlqT7JluEIy0QoDTh7grgCbdT6gK6hAv3EyXZZsn6/gXTbv+zRwG1eHlG/jDsYFHsdocFkRkRsTzRcH/266FRBFge1o07LLsBsqU60YFyQkk9A51JyR0d3qmu3kJF8STwLO33ph6JHZrfkNKnChZCT0GjE1lgEQy6f7IKiMpgyWRgC2KIM37TiawF/KSNfXW0OiUJ1RfpgZVfTcyXJpDzkVZTKXIgD6NK0aMCCrcaKXEvOIFVmHNtdWz1zwhVvypFzacrcA1tXfxu4g2Xf9pzABEyVc93lHwrD8cHkaESTuLKVE6S52BXK7XaOt6jJnh/dIlA5wetfe0uPWtRq6J2bR/MHviuJWZpLPDrlPGo+EuSRLmDxrGdbJNzcpJegG5mdRgRdOfhaE0Ffod6BxNANoL311u6xJbMyaGKrG+uBh331VTcA/s9C4F3+bmRWz9/Xd6awCy4vIVMytmUZWVZRrSAkg8uJD8ivlsdl55OTAoj1cufIUXlOhBQ03oh/L4hCX8taDSo/vn54eGDiU012SePKKMfaNaIES8ueo=
+    on_success: change
+    on_failure: always
