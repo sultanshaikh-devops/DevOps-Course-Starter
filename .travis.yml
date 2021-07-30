@@ -10,7 +10,8 @@ script:
 after_success:
 - echo "All done!"
 notifications:
+  slack:
+    secure: OcJCoOyPJkFV1H04TEG6s1ECrX4GhsEAp6h+0RRlL+VW61VJZZsUpvbM72SjwVkxFdmC/kzmYKRENAzUHgpXc1Jwp9bFozQ9dGXuxCrgQ/1GyDgrVsdryDdNZJi78T3wmMqtU8WKXsnGAB5+Jl5TzZjicsu9I6LLeNizkgzt7OF5HF/XWiT5Wno7VLkD3rCsgvEXmyZK7ZUR6gJDaw7AZAGfwHjUx7SPH2LI65gWrOK/ayvAmsadA5deV/onDABqWTfPKYw0KTHEfSk8TCPSd/HORG60FBAVb50gzgNoDwCuD/wga5pasRpZbMslgqPQ3JqXScWHkOyvEsM0TDnmmjcTsXkzwBfCCIQaCVsVZaEcC5vF5T2pgUaK65KpeDI3gkCLhHmZwARxM+Dcc8exLG9VOVtyh3Csdjy21Mk6w0OXhGz1K1XAWzCV6GtPPA6JjW22J7pD4chNRqaiOTiZuyS4EMzPAj0RFcVdyrASKGje/+xyzNlMMkb8JSs/SUuG/rtfCoG8oWDuEmUJlw5xnKQ7q+C0JDgPEpgUtAtHCLSKYN2uTv0qa/DKejXNnFpzOAVjjDlS2zRCmFK6MnH0Sg3PK2bZJz2x40EPWdnHefJ9i/ddhVkzbooCC4TcfWROkx1S2MjDNeKp+0615JlbErm23372vsCxE3aCO6+kutE=
   email:
     on_success: never
     on_failure: always
-  slack: corndeldevops-jul3809:C9AqJZmrIegRyC0ReZkku0oB
