@@ -2,9 +2,11 @@ language: bash
 sudo: required
 service:
 - docker
-before_install:
-- docker build -t todo-app-test:latest .
+- docker-compose
+
 script:
+- docker-compose -f docker-compose-dev.yml up -d --build
+#- docker build -t todo-app-test:latest .
 - docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY -e SECRET_KEY --entrypoint poetry
   todo-app-test:latest run pytest
 after_success:

@@ -3,8 +3,6 @@
 .pytest_cache
 .vagrant
 .vscode
-#tests
-#test_e2e
 */__pycache_*
 
 #exclude root level files
