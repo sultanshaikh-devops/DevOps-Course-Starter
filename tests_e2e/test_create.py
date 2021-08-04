@@ -57,6 +57,7 @@ def app_with_temp_board():
     del_board_response = delete_trello_board(os.environ.get('TRELLO_BOARD_ID'),key=API_KEY,token=TOKEN)
     if del_board_response.status_code == 200:
         print(f'Board deleted passed {del_board_response.status_code}')
+        os.environ['TRELLO_BOARD_NAME'] = "ToDo"
     else:
         print(f'Board delete failed {del_board_response.status_code}')
 

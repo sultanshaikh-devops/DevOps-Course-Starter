@@ -1,4 +1,30 @@
+
 # DevOps Apprenticeship: Project Exercise
+
+[![Build Status](https://travis-ci.com/sultanshaikh-devops/DevOps-Course-Starter.svg?branch=master)](https://travis-ci.com/sultanshaikh-devops/DevOps-Course-Starter)
+![GitHub](https://img.shields.io/github/license/sultanshaikh-devops/DevOps-Course-Starter)
+![GitHub last commit](https://img.shields.io/github/last-commit/sultanshaikh-devops/DevOps-Course-Starter)
+
+## Module 7 
+---
+To validate Module 7 project work, follow the steps below:
+  + Make a Fork out of branch
+  + Ensure you have setup free account with travis CI (https://travis-ci.com/) and linked your GITHUB account.
+  + Ensure you have your own personal slack account and to create required webhook
+    Please review documentation here[1] to setup slack notifications for your build. 
+    For Travis CLI login, please use your GitHub Token[2] i.e. travis login --github-token <Your GitHub Token> --pro 
+    example: You can then use travis encrypt "<MY_DOMAIN>:<MY_TOKEN>" --add notifications.slack -r sultanshaikh-devops/DevOps-Course-Starter --pro  at the root of your project directory to add slack token to your .travis.yml file.
+    [1] https://docs.travis-ci.com/user/notifications/#configuring-slack-notifications
+    [2] https://github.com/settings/tokens
+
+  + Create following environment variables from repository settings 
+    ```bash
+    TRELLO_API_KEY=
+    SECRET_KEY=
+    TRELLO_API_SECRET=
+    ```
+  + Good to go!
+
 
 ## System Requirements
 ---
