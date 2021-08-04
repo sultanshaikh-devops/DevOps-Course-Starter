@@ -1,4 +1,4 @@
-version: "3.3" 
+version: "3.8" 
 
 services:
   devapp:
@@ -8,13 +8,6 @@ services:
       dockerfile: Dockerfile
       target: development
     image: todo-app-dev:latest
-    volumes: 
-      - type: bind
-        source: .
-        target: /app
-    ports:
-      - 5000:5000
-
   
   testapp:
     container_name: todo-app-test
