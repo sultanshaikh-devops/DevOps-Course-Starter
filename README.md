@@ -5,7 +5,7 @@
 ![GitHub](https://img.shields.io/github/license/sultanshaikh-devops/DevOps-Course-Starter)
 ![GitHub last commit](https://img.shields.io/github/last-commit/sultanshaikh-devops/DevOps-Course-Starter)
 
-## Module 8 
+## Module 8 & 7
 ---
 To validate Module 7 project work, follow the steps below:
   + Make a Fork out of branch
