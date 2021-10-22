@@ -20,6 +20,7 @@ FROM base as production
 RUN poetry install --no-root --no-dev
 COPY . /app
 EXPOSE 5000
+RUN chmod +x entrypoint.sh
 ENTRYPOINT ./entrypoint.sh
 
 #Development Stage
