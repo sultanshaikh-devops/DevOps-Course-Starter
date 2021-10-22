@@ -6,5 +6,3 @@ docker push registry.heroku.com/ss-todo-app/web
 heroku container:login
 heroku container:release web --app ss-todo-app
 
-#e1f0ff8c-bbea-4cc3-bc63-3e978ec35cda
-#sultan.shaikh@hotmail.co.uk
