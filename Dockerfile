@@ -17,7 +17,8 @@ RUN poetry config virtualenvs.create false
 
 #Production Stage
 FROM base as production
-RUN poetry install --no-root --no-dev
+RUN poetry config virtualenvs.create false --local && poetry install --no-root --no-dev
+#poetry install --no-root --no-dev
 COPY . /app
 EXPOSE 5000
 RUN chmod +x entrypoint.sh
