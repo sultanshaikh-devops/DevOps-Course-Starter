@@ -20,7 +20,7 @@ FROM base as production
 RUN poetry install --no-root --no-dev
 COPY . /app
 EXPOSE 5000
-ENTRYPOINT poetry run gunicorn 'todo_app.app:create_app()' --bind 0.0.0.0:5000
+ENTRYPOINT ./entrypoint.sh
 
 #Development Stage
 FROM base as development
