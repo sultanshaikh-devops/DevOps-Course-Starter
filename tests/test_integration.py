@@ -6,15 +6,17 @@ from unittest.mock import Mock, patch
 import datetime
 from todo_app.mongodbclient import *
 
-storeConString  = str(os.environ['MONGO_CONNECTION_STRING'])
+storeConString  = ""
 
 @pytest.fixture
 def client():
     # Use our test integration config instead of the 'real' version
     file_path = find_dotenv('.env.test')
     load_dotenv(file_path, override=True)
+    storeConString = os.environ['MONGO_CONNECTION_STRING']
     os.environ['MONGO_CONNECTION_STRING'] = "mongodb://admin:xyz@server.example.com/todo_app?retryWrites=true&w=majority"
     test_app = app.create_app()
+    os.environ['MONGO_CONNECTION_STRING'] = storeConString
     with test_app.test_client() as client:
         yield client
 
