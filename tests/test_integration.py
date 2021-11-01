@@ -29,4 +29,5 @@ def test_index_page(client):
     response = client.get('/')
     assert response.status_code == 200
     assert 'Task8' in response.data.decode()
-    os.environ['MONGO_CONNECTION_STRING'] = stringToSetBack
+
+os.environ['MONGO_CONNECTION_STRING'] = stringToSetBack
