@@ -7,6 +7,12 @@
 
 ## Module 9
 ---
+In this application has been switch from using TRELLO to MongoDb.
+For this exercise we are going to use a service called MongoDB Atlas (https://www.mongodb.com/atlas/database). This will let us create a 
+MongoDB cluster that our application can use. There is a free tier, which is suitable for our 
+purposes. If you choose the "I'm learning MongoDB" option at sign-up then the set-up 
+instructions are very intuitive. Start the sign-up process.
+
 ## Travis CI
 #### Update Travis CI variables
   * MONGODB_COLLECTIONNAME
