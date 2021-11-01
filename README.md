@@ -5,6 +5,20 @@
 ![GitHub](https://img.shields.io/github/license/sultanshaikh-devops/DevOps-Course-Starter)
 ![GitHub last commit](https://img.shields.io/github/last-commit/sultanshaikh-devops/DevOps-Course-Starter)
 
+## Module 9
+---
+## Travis CI
+#### Update Travis CI variable
+  * MONGODB_COLLECTIONNAME
+  * MONGO_CONNECTION_STRING
+  * SECRET_KEY
+  * dockerPassword
+  * dockerUsername
+  * HEROKU_API_KEY
+  * HEROKU_USERNAME
+
+Note: 
+
 ## Module 8
 ---
 ## Travis CI

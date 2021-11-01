@@ -1,9 +1,8 @@
 class Card:
-    def __init__(self, card, statuslabel):
-        self.listid = card['idList']
-        self.id = card['id']                     
-        self.status = statuslabel
-        self.title = card['name']
-        self.due = card['due']
-        self.desc = card['desc']   
-        self.dateLastActivity = card['dateLastActivity']   
+    def __init__(self, item):
+        self.id = str(item['_id'])
+        self.name = item['name']
+        self.desc = item['desc']
+        self.due = item['due']                     
+        self.status = item['status']   
+        self.dateLastActivity = item['dateLastActivity']   
