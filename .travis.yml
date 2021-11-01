@@ -8,15 +8,14 @@ jobs:
     - stage: build and test
       script:
       - docker-compose -f docker-compose-dev.yml up -d --build
-      #- docker build -t todo-app-test:latest .
-      - docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY -e SECRET_KEY --entrypoint poetry
+      - docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY --entrypoint poetry
         todo-app-test:latest run pytest
 
     - stage: docker build and publish
       script:
-      - docker build --target production --tag $dockerUsername/todo-app-prod:latest .
+      - docker build --target production --tag $dockerUsername/todo-app-prod:prod .
       - echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
-      - docker push $dockerUsername/todo-app-prod:latest
+      - docker push $dockerUsername/todo-app-prod:prod
 
 deploy:
   provider: script
