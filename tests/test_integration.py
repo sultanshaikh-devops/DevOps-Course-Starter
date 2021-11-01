@@ -6,6 +6,8 @@ from unittest.mock import Mock, patch
 import datetime
 from todo_app.mongodbclient import *
 
+storeConString  = str(os.environ['MONGO_CONNECTION_STRING'])
+
 @pytest.fixture
 def client():
     # Use our test integration config instead of the 'real' version
@@ -28,3 +30,5 @@ def test_index_page(client):
     assert response.status_code == 200
     assert 'Task8' in response.data.decode()
 
+os.environ['MONGO_CONNECTION_STRING'] = storeConString
+print(os.environ['MONGO_CONNECTION_STRING'])
