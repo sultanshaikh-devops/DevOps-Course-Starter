@@ -1,13 +1,13 @@
 version: "3.7" 
 
 services:
-  devapp:
-    container_name: todo-app-dev
-    build:      
-      context: .
-      dockerfile: Dockerfile
-      target: development
-    image: todo-app-dev:latest
+  # devapp:
+  #   container_name: todo-app-dev
+  #   build:      
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: development
+  #   image: todo-app-dev:latest
   
   testapp:
     container_name: todo-app-test
