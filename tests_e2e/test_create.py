@@ -8,27 +8,6 @@ import todo_app.app as app
 import pymongo
 from todo_app.mongodbclient import *
 
-
-
-# BASE_URL = "https://api.trello.com/1/"
-
-# def create_trello_board(key,token):
-#     params = {
-#         'key': key,
-#         'token': token,
-#         'name': "E2E Testing",
-#     }
-#     response = requests.post(BASE_URL + 'boards', params=params)
-#     return response
-
-# def delete_trello_board(board_id,key,token):
-#     params = {
-#         'key': key,
-#         'token': token,
-#     }
-#     response = requests.delete(BASE_URL + f'boards/{board_id}', params=params)
-#     return response
-
 @pytest.fixture(scope='module')
 def app_with_temp_board():
     # Loading environment variables 

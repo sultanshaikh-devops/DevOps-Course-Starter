@@ -8,7 +8,7 @@
 ## Module 9
 ---
 ## Travis CI
-#### Update Travis CI variable
+#### Update Travis CI variables
   * MONGODB_COLLECTIONNAME
   * MONGO_CONNECTION_STRING
   * SECRET_KEY
