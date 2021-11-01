@@ -3,17 +3,35 @@ sudo: required
 service:
 - docker
 - docker-compose
+jobs:
+  include:
+    - stage: build and test
+      script:
+      - docker-compose -f docker-compose-dev.yml up -d --build
+      #- docker build -t todo-app-test:latest .
+      - docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY -e SECRET_KEY --entrypoint poetry
+        todo-app-test:latest run pytest
 
-script:
-- docker-compose -f docker-compose-dev.yml up -d --build
-#- docker build -t todo-app-test:latest .
-- docker run -e TRELLO_API_SECRET -e TRELLO_API_KEY -e SECRET_KEY --entrypoint poetry
-  todo-app-test:latest run pytest
+    - stage: docker build and publish
+      script:
+      - docker build --target production --tag $dockerUsername/todo-app-prod:prod .
+      - echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
+      - docker push $dockerUsername/todo-app-prod:prod
+
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
+
 after_success:
 - echo "All done!"
+
 notifications:
   slack:
     secure: YiIM7K38DkqusuSwbhcCleuiN2XiAdN9bDN7mclpqvAY/xvHswXlSfpMQM32BlZ1WGtnry9Gh8s9iwtPPjwd5vPxcvflIbQ8VJe4lkUjdiXOa32lvEUaewDBxNIh4vmeja3KTJQq15p10khKWvXagRJxZ3lNc8k4ZCCx/0j1DTDaNGXXH9ku/gHIW6e2H1ZsHp67r6/VhvndqTBKae6HXZqhVo8b5MHjH28utQjnH0TZOVD2knNV3oXtL2Xg0kIzfgS+JZR/kxpEyoOzjihAtNcznhODh2nDWqZQeCeuurjHL3uvY8D2Fo7TkyWbB9AbQlFdlIVhNMd2lr8+EsPpXwkobPgjH1zbJMOzChncxu40L/Ym8I8ZkhCiCJxbT9flX3kXHeNfkv0Qc8WwccUA7+hfWkO9P8C7M5L+lcaS+vr/vXz+6wfaAsooMM2zs/7543C0fgeOsTrxPWgBaO0hwUQlmNGGVwCXaFfM4Y242q7Xxb0iNmtkTu4t+nPuM1Tt7Ky2m9Fo8wWACUKp6WvPy87ugN1aIsmdWLkD9HETcqBPepxi7Y1wKRFA+G6ivzUIntCZf9l5JMBFte6OCYEkk4+2K6KQ7fpnNIJ/KHJDsEpE2MX/ZM4x5u9TO25wbDjEvG+ePc03ySjvXY9XKrlAPvgpFnaKY1DMo3sWEtPavos=
   email:
-    on_success: never
+    recipients:
+      - sultan.shaikh@hotmail.co.uk
+    on_success: always
     on_failure: always
