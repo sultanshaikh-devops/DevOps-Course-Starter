@@ -16,7 +16,6 @@ def app_with_temp_board():
 
     # Create the new collection and save env to file   
     os.environ['MONGODB_COLLECTIONNAME'] = "tasks"
-    os.environ['MONGO_CONNECTION_STRING'] = "mongodb://admin:xyz@server.example.com/todo_app?retryWrites=true&w=majority"
     
     # construct the new application
     application = app.create_app()
