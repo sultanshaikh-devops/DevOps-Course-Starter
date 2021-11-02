@@ -7,6 +7,8 @@
 
 ## Module 9
 ---
+Link to HeroKu app: https://ss-todo-app.herokuapp.com/
+
 In this application has been switched from using TRELLO to MongoDb.
 For this exercise we are going to use a service called MongoDB Atlas (https://www.mongodb.com/atlas/database). This will let us create a 
 MongoDB cluster that our application can use. There is a free tier, which is suitable for our 
