@@ -13,11 +13,10 @@ jobs:
       - docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY --entrypoint poetry
         todo-app-test:latest run pytest tests_e2e
 
-    - stage: docker build and publish
-      script:
-      - docker build --target production --tag $dockerUsername/todo-app-prod:prod .
-      - echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
-      - docker push $dockerUsername/todo-app-prod:prod
+before_deploy:
+- docker build --target production --tag $dockerUsername/todo-app-prod:latest .
+- echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
+- docker push $dockerUsername/todo-app-prod:latest
 
 deploy:
   provider: script
