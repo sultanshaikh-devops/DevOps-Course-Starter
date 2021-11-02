@@ -22,7 +22,7 @@ deploy:
   provider: script
   script: bash ./deploy.sh
   on:
-    branch: master
+    branch: mod9
 
 after_success:
 - echo "All done!"
