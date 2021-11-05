@@ -38,8 +38,8 @@
             <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
             <td>{{ task.status }}</td>
             <td>
-                <button class="btn btn-outline-success btn-group-sm ml-3" style="display:inline"  onclick="window.location.href='/edit/{{task.id}}'">Edit</button>    
-                <button class="btn btn-outline-danger btn-group-sm ml-3"  style="display:inline"  onclick="window.location.href='/delete/{{task.id}}'">Delete</button>
+                <button id="todo_edit" class="btn btn-outline-success btn-group-sm ml-3" style="display:inline"  onclick="window.location.href='/edit/{{task.id}}'">Edit</button>    
+                <button id="todo_delete" class="btn btn-outline-danger btn-group-sm ml-3"  style="display:inline"  onclick="window.location.href='/delete/{{task.id}}'">Delete</button>
             </td>
           </tr>
           {% endfor%}
@@ -70,8 +70,8 @@
             <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
             <td>{{ task.status }}</td>
             <td>
-              <button class="btn btn-outline-success btn-group-sm ml-3" style="display:inline" onclick="window.location.href='/edit/{{task.id}}'">Edit</button>
-              <button class="btn btn-outline-danger btn-group-sm ml-3" style="display:inline" onclick="window.location.href='/delete/{{task.id}}'">Delete</button>
+              <button id="doing_edit" class="btn btn-outline-success btn-group-sm ml-3" style="display:inline" onclick="window.location.href='/edit/{{task.id}}'">Edit</button>
+              <button id="doing_delete" class="btn btn-outline-danger btn-group-sm ml-3" style="display:inline" onclick="window.location.href='/delete/{{task.id}}'">Delete</button>
             </td>
           </tr>
           {% endfor%}
