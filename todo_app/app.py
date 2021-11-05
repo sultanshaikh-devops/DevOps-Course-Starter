@@ -20,7 +20,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('todo_app.flask_config.Config')
 
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT']
+    #os.environ['OAUTHLIB_INSECURE_TRANSPORT']
     gh_blueprint = make_github_blueprint(client_id=os.environ['GITHUB_CLIENT_ID'], client_secret=os.environ['GITHUB_CLIENT_SECRET'])
     app.register_blueprint(gh_blueprint, url_prefix='/github_login')
 
@@ -86,7 +86,7 @@ def create_app():
             userRole = "False"
         else:
             userRole = usermanager.IsDisable(current_user.id)
-            
+
         for item in items:
             cardslist.append(Card(item))
         item_view_model = ViewModel(cardslist)
