@@ -12,6 +12,17 @@ from flask_dance.contrib.github import make_github_blueprint, github
 from flask_login import UserMixin, current_user, LoginManager, login_required, login_user, logout_user
 from flask_dance.consumer import oauth_authorized
 
+class ReverseProxied(object):
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        scheme = environ.get('HTTP_X_FORWARDED_PROTO')
+        if scheme:
+            environ['wsgi.url_scheme'] = scheme
+        return self.app(environ, start_response)
+
+
 class UserToLogin (UserMixin):
     def __init__(self, id):
         self.id = id
@@ -19,6 +30,7 @@ class UserToLogin (UserMixin):
 def create_app():
     app = Flask(__name__)
     app.config.from_object('todo_app.flask_config.Config')
+    app.wsgi_app = ReverseProxied(app.wsgi_app)
 
     #os.environ['OAUTHLIB_INSECURE_TRANSPORT']
     gh_blueprint = make_github_blueprint(client_id=os.environ['GITHUB_CLIENT_ID'], client_secret=os.environ['GITHUB_CLIENT_SECRET'])
