@@ -7,12 +7,14 @@
     <br></br>
     <h1 style="display:inline"></h1>
     
-    <a style="display:inline" class="btn btn-success float-right" href="/new">+ New Task</a> 
+    <button style="display:inline" class="btn btn-success float-right" onclick="window.location.href='/new'">+ New Task</button> 
     <a style="display:inline" class="btn btn-outline-secondary float-left" href="/getpreviousdonetasks">Show older done tasks</a>
     <a style="display:inline" class="btn btn-outline-secondary float-left" href="/gettodaydonetasks">Show today done tasks</a>
 
+
     <br></br>
     <input class="form-control" type="text" id="myInput" onkeyup="searchTask()" placeholder="Search for task.."></input>
+    <input class="form-control" type="hidden" id="role" name="mytext" hidden="true" value='{{ strRole }}'></input>
     <br></br>
 
     <details open>
@@ -22,10 +24,10 @@
         <thead>
           <tr>
             <th class="th-sm" style="display:none">#</th>
-            <th class="th-sm" style="width: 65%">Title</th>
+            <th class="th-sm" style="width: 60%">Title</th>
             <th class="th-sm" style="width: 10%">Due Date</th>
             <th class="th-sm" style="width: 10%">Status</th>
-            <th class="th-sm" style="width: 15%">Actions</th>
+            <th class="th-sm" style="width: 20%">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -36,8 +38,8 @@
             <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
             <td>{{ task.status }}</td>
             <td>
-              <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
-              <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
+                <button class="btn btn-outline-success btn-group-sm ml-3" style="display:inline"  onclick="window.location.href='/edit/{{task.id}}'">Edit</button>    
+                <button class="btn btn-outline-danger btn-group-sm ml-3"  style="display:inline"  onclick="window.location.href='/delete/{{task.id}}'">Delete</button>
             </td>
           </tr>
           {% endfor%}
@@ -54,10 +56,10 @@
         <thead>
           <tr>
             <th class="th-sm" style="display:none">#</th>
-            <th class="th-sm" style="width: 65%">Title</th>
+            <th class="th-sm" style="width: 60%">Title</th>
             <th class="th-sm" style="width: 10%">Due Date</th>
             <th class="th-sm" style="width: 10%">Status</th>
-            <th class="th-sm" style="width: 15%">Actions</th>
+            <th class="th-sm" style="width: 20%">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -68,8 +70,8 @@
             <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
             <td>{{ task.status }}</td>
             <td>
-              <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
-                <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
+              <button class="btn btn-outline-success btn-group-sm ml-3" style="display:inline" onclick="window.location.href='/edit/{{task.id}}'">Edit</button>
+              <button class="btn btn-outline-danger btn-group-sm ml-3" style="display:inline" onclick="window.location.href='/delete/{{task.id}}'">Delete</button>
             </td>
           </tr>
           {% endfor%}
@@ -86,10 +88,10 @@
       <thead>
         <tr>
           <th class="th-sm" style="display:none">#</th>
-          <th class="th-sm" style="width: 65%">Title</th>
+          <th class="th-sm" style="width: 60%">Title</th>
           <th class="th-sm" style="width: 10%">Due Date</th>
           <th class="th-sm" style="width: 10%">Status</th>
-          <th class="th-sm" style="width: 15%">Actions</th>
+          <th class="th-sm" style="width: 20%">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -100,8 +102,8 @@
           <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
           <td>{{ task.status }}</td>
           <td>
-            <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
-            <a class="btn btn-outline-danger btn-group-sm ml-3" href='/delete/{{task.id}}'>Delete</button>
+            <button class="btn btn-outline-success btn-group-sm ml-3" style="display:inline" onclick="window.location.href='/edit/{{task.id}}'">Edit</button>
+            <button class="btn btn-outline-danger btn-group-sm ml-3" style="display:inline" onclick="window.location.href='/delete/{{task.id}}'">Delete</button>
           </td>
         </tr>
         {% endfor%}
@@ -160,8 +162,22 @@
         }
       }
     }
+
+
   }
 
+  $(document).ready(function() {
+    $('button').prop('disabled', true);
+
+    if ($('input[type=hidden]').val()  == "False")
+    {
+      $('button').prop('disabled', false);
+    }
+    else {
+      $('button').prop('disabled', true);
+    }
+  
+  });
 
 </script>
 

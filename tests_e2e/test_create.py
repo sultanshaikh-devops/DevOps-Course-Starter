@@ -6,13 +6,15 @@ from selenium.webdriver.common.keys import Keys
 from dotenv import find_dotenv, load_dotenv
 import todo_app.app as app
 import pymongo
-from todo_app.mongodbclient import *
+# from todo_app.mongodbclient import *
+from todo_app.adapters.mongodb_todo import *
 
 @pytest.fixture(scope='module')
 def app_with_temp_board():
     # Loading environment variables 
     file_path = find_dotenv('.env')
     load_dotenv(file_path, override=True)
+    os.environ['LOGIN_DISABLED']="True"
 
     # Create the new collection and save env to file   
     os.environ['MONGODB_COLLECTIONNAME'] = "tasks"
@@ -28,9 +30,9 @@ def app_with_temp_board():
 
     # Tear Down
     thread.join(1)
-    mongo = MongoDBClient()
+    mongo = mongodb_todo()
     mongo.collection.drop()
-
+  
 
 @pytest.fixture(scope="module")
 def driver():
@@ -39,7 +41,7 @@ def driver():
 
 #test entries
 def test_task_journey(driver, app_with_temp_board):
-    driver.get('http://localhost:5000/')
+    driver.get('http://localhost:5000/home')
     assert driver.title == 'To-Do App' 
 
 def test_create_task(driver, app_with_temp_board):

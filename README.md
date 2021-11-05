@@ -5,6 +5,17 @@
 ![GitHub](https://img.shields.io/github/license/sultanshaikh-devops/DevOps-Course-Starter)
 ![GitHub last commit](https://img.shields.io/github/last-commit/sultanshaikh-devops/DevOps-Course-Starter)
 
+## Module 10
+----
+* Must have MongoDB setup
+* Register new OAuth App under your Github account 
+  * set Homepage URL: http://127.0.0.1:5000/home
+  * set Authorization callback URL: http://127.0.0.1:5000/github_login/github/authorized
+* Make a note of your Client ID and Client secrets
+  * Update .env file
+* First account login will get 'Admin' role, all other new account login will have 'read' role.
+* 'write' role can be assigned to user by accessing user manager through menu but must be logged with 'admin' role account.
+
 ## Module 9
 ---
 Link to HeroKu app: https://ss-todo-app.herokuapp.com/
