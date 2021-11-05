@@ -82,7 +82,11 @@ def create_app():
     def get_index():
         cardslist = []
         items = todo.get_AllItems()
-        userRole = usermanager.IsDisable(current_user.id)
+        if (app.config['LOGIN_DISABLED']):
+            userRole = "False"
+        else:
+            userRole = usermanager.IsDisable(current_user.id)
+            
         for item in items:
             cardslist.append(Card(item))
         item_view_model = ViewModel(cardslist)
