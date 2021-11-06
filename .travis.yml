@@ -27,7 +27,7 @@ deploy:
   provider: script
   script: bash ./webhook.sh
   on:
-    branch: mod11
+    branch: master
 
 after_success:
 - echo "All done!"
