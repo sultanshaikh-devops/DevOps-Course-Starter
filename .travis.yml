@@ -20,15 +20,12 @@ before_deploy:
 
 deploy:
   provider: script
-  script: 
-    bash ./deploy.sh
-    bash ./webhook.sh
+  script: bash ./deploy.sh
   on:
     branch: master
-
+  
   provider: script
-  script: 
-    bash ./webhook.sh
+  script: bash ./webhook.sh
   on:
     branch: mod11
 
