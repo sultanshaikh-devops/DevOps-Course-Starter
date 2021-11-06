@@ -20,9 +20,17 @@ before_deploy:
 
 deploy:
   provider: script
-  script: bash ./deploy.sh
+  script: 
+    bash ./deploy.sh
+    bash ./webhook.sh
   on:
     branch: master
+
+  provider: script
+  script: 
+    bash ./webhook.sh
+  on:
+    branch: mod11
 
 after_success:
 - echo "All done!"
