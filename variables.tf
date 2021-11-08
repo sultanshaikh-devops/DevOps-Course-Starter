@@ -29,8 +29,6 @@ variable "storage" {
 
 }
 
-
-
 variable "storageaccount" {
   description = "The Azure storage accout name used to store tfstate"
   default     = "tfstate007ss"
