@@ -18,7 +18,7 @@ jobs:
       - docker run --env-file .env.test --entrypoint poetry todo-app-test:latest run pytest tests
       - terraform init
       - terraform apply "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
-      - env DEV_MONGO_CONNECTION_STRING = "$(terraform output -raw dev_cosmosdb_connection_string)"
+      - DEV_MONGO_CONNECTION_STRING = "$(terraform output -raw dev_cosmosdb_connection_string)"
       - docker run -e DEV_MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET  --entrypoint poetry todo-app-test:latest run pytest tests_e2e  
 
 # jobs:
