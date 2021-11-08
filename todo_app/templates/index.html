@@ -7,8 +7,8 @@
     <br></br>
     <h1 style="display:inline"></h1>
 
-    {% if strRole == "False" %}<button style="display:inline" class="btn btn-success float-right"
-      onclick="window.location.href='/new'">+ New Task</button> {% endif %}
+    {% if strRole == False %}<button style="display:inline"
+      class="btn btn-success float-right" onclick="window.location.href='/new'">+ New Task</button>{% endif %}
     <a style="display:inline" class="btn btn-outline-secondary float-left" href="/getpreviousdonetasks">Show older done
       tasks</a>
     <a style="display:inline" class="btn btn-outline-secondary float-left" href="/gettodaydonetasks">Show today done
@@ -40,16 +40,17 @@
             <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
             <td>{{ task.status }}</td>
             <td>
-              {% if strRole == "False" %}<button id="todo_edit" class="btn btn-outline-success btn-group-sm ml-3" style="display:inline"
-                onclick="window.location.href='/edit/{{task.id}}'">Edit</button>{% endif %}
-              {% if strRole == "False" %}<button id="todo_delete" class="btn btn-outline-danger btn-group-sm ml-3" style="display:inline"
-                onclick="window.location.href='/delete/{{task.id}}'">Delete</button>{% endif %}
+              {% if strRole == False %}
+              <button id="todo_edit" class="btn btn-outline-success btn-group-sm ml-3" style="display:inline"
+                onclick="window.location.href='/edit/{{task.id}}'">Edit</button>
+              <button id="todo_delete" class="btn btn-outline-danger btn-group-sm ml-3" style="display:inline"
+                onclick="window.location.href='/delete/{{task.id}}'">Delete</button>
+              {% endif %}
             </td>
           </tr>
           {% endfor%}
         </tbody>
-        <tfoot>
-        </tfoot>
+        <tfoot </tfoot>
       </table>
     </details>
 
@@ -74,10 +75,12 @@
             <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
             <td>{{ task.status }}</td>
             <td>
-              {% if strRole == "False" %}<button id="doing_edit" class="btn btn-outline-success btn-group-sm ml-3" style="display:inline"
-                onclick="window.location.href='/edit/{{task.id}}'">Edit</button>{% endif %}
-              {% if strRole == "False" %}<button id="doing_delete" class="btn btn-outline-danger btn-group-sm ml-3" style="display:inline"
-                onclick="window.location.href='/delete/{{task.id}}'">Delete</button>{% endif %}
+              {% if strRole == False %}
+              <button id="doing_edit" class="btn btn-outline-success btn-group-sm ml-3" style="display:inline"
+                onclick="window.location.href='/edit/{{task.id}}'">Edit</button>
+              <button id="doing_delete" class="btn btn-outline-danger btn-group-sm ml-3" style="display:inline"
+                onclick="window.location.href='/delete/{{task.id}}'">Delete</button>
+              {% endif %}
             </td>
           </tr>
           {% endfor%}
@@ -108,10 +111,12 @@
             <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
             <td>{{ task.status }}</td>
             <td>
-              {% if strRole == "False" %}<button class="btn btn-outline-success btn-group-sm ml-3" style="display:inline"
-                onclick="window.location.href='/edit/{{task.id}}'">Edit</button>{% endif %}
-              {% if strRole == "False" %}<button class="btn btn-outline-danger btn-group-sm ml-3" style="display:inline"
-                onclick="window.location.href='/delete/{{task.id}}'">Delete</button>{% endif %}
+              {% if strRole == False %}
+              <button class="btn btn-outline-success btn-group-sm ml-3" style="display:inline"
+                onclick="window.location.href='/edit/{{task.id}}'">Edit</button>
+              <button class="btn btn-outline-danger btn-group-sm ml-3" style="display:inline"
+                onclick="window.location.href='/delete/{{task.id}}'">Delete</button>
+              {% endif %}
             </td>
           </tr>
           {% endfor%}
@@ -173,6 +178,7 @@
 
 
   }
+
 
 </script>
 
