@@ -16,8 +16,9 @@ def app_with_temp_board():
     load_dotenv(file_path, override=True)
     os.environ['LOGIN_DISABLED']="True"
 
-    # Create the new collection and save env to file   
-    os.environ['MONGODB_COLLECTIONNAME'] = "tasks"
+    # Create the new collection and save env to file
+    os.environ['MONGODB_COLLECTIONNAME'] = "tasks"   
+    os.environ['MONGO_CONNECTION_STRING'] = os.environ['DEV_MONGO_CONNECTION_STRING']
     
     # construct the new application
     application = app.create_app()
