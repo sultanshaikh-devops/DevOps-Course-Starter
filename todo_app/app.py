@@ -95,7 +95,7 @@ def create_app():
         cardslist = []
         items = todo.get_AllItems()
         if (app.config['LOGIN_DISABLED']):
-            userRole = "False"
+            userRole = False
         else:
             userRole = usermanager.IsDisable(current_user.id)
 
