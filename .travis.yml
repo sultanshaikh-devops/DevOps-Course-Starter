@@ -13,6 +13,14 @@ jobs:
       - docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET  --entrypoint poetry
         todo-app-test:latest run pytest tests_e2e
 
+install: 
+- wget https://releases.hashicorp.com/terraform/"$TF_VERSION"/terraform_"$TF_VERSION"_linux_amd64.zip 
+- unzip terraform_"$TF_VERSION"_linux_amd64.zip 
+- sudo mv terraform /usr/local/bin/ 
+- rm terraform_"$TF_VERSION"_linux_amd64.zip 
+- terraform init
+- terraform apply -var  -auto-approve
+
 before_deploy:
 - docker build --target production --tag $dockerUsername/todo-app-prod:latest .
 - echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin

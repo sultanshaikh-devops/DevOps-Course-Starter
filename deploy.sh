@@ -5,3 +5,4 @@ echo "$HEROKU_API_KEY" | docker login --username="$HEROKU_USERNAME" --password-s
 docker push registry.heroku.com/ss-todo-app/web
 heroku container:login
 heroku container:release web --app ss-todo-app
+curl -dH -X POST "$(terraform output -raw cd_webhook)"
