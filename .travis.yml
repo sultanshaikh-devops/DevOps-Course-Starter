@@ -32,7 +32,7 @@ jobs:
       - TWD="$(pwd)"
       - echo $TWD
       - cd ./terraform_env/dev
-      - terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
+      #- terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
       - cd ..
     - name: Update or create az web app
       if: branch != master
