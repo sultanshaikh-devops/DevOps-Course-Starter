@@ -14,7 +14,7 @@ jobs:
   include:
     - stage: Deploy test cosmos db
       script: 
-      - cd terraform/dev
+      - cd ./terraform/dev
       - terraform init
       - terraform plan
       - terraform apply -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
