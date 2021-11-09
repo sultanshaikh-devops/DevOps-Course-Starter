@@ -35,6 +35,7 @@ jobs:
       - terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
       - cd ..
     - name: Update or create az web app
+      async: false
       if: branch != master
       script:
       - cd prod
