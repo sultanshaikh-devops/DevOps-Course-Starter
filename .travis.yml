@@ -14,6 +14,7 @@ jobs:
   include:
     - stage: Testing and Validation
       script:
+      - pwd
       - docker-compose -f docker-compose-dev.yml up -d --build
       - docker run --env-file .env.test --entrypoint poetry todo-app-test:latest run pytest tests
       - cd ./terraform/dev
