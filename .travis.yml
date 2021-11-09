@@ -6,7 +6,7 @@ service:
 
 install: 
 - wget https://releases.hashicorp.com/terraform/"$TF_VERSION"/terraform_"$TF_VERSION"_linux_amd64.zip 
-- unzip -o terraform_"$TF_VERSION"_linux_amd64.zip 
+- unzip -f terraform_"$TF_VERSION"_linux_amd64.zip 
 - sudo mv terraform /usr/local/bin/ 
 - rm terraform_"$TF_VERSION"_linux_amd64.zip 
 
