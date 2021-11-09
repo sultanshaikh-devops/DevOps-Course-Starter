@@ -13,7 +13,7 @@ install:
 jobs:  
   include:
     - stages: 
-    - name: Build_Test_Destory_Envirnoment
+    - name: Build_Test_Destory_Environment
       script:
       - cd terraform_env/dev
       - terraform init
