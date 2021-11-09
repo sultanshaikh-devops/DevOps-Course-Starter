@@ -18,8 +18,8 @@ jobs:
       - echo $HOMEDIR
       - docker-compose -f docker-compose-dev.yml up -d --build
       - docker run --env-file .env.test --entrypoint poetry todo-app-test:latest run pytest tests
-      - cd $(echo $HOMEDIR | tr -d '\r')
-      - echo $HOMEDIR
+      - cd
+      - echo $(pwd)
       - cd ./terraform/dev
       - terraform init
       - terraform plan
