@@ -12,6 +12,7 @@ variable "location" {
 variable "DOCKER_REGISTRY_SERVER_URL" {
   type        = string
   description = "The docker url"
+  default = "https://index.docker.io/v1"
 }
 
 variable "DOCKER_REGISTRY_SERVER_PASSWORD" {
