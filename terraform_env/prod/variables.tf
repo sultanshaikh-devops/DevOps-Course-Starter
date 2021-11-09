@@ -55,7 +55,11 @@ variable "linux_fx_version" {
   default     = "DOCKER|sultanshaikh50/todo-app-prod:latest"
 }
 
-
+variable "resource_group_name" {
+  type = string
+  description = "The Azure resource name where all resources in this deployment should be created"
+  
+}
 
 
 # variable "storage" {
