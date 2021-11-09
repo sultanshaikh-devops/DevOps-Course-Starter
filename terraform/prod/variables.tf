@@ -8,6 +8,7 @@ variable "location" {
   description = "The Azure location where all resources in this  deployment should be created"
 }
 
+
 variable "DOCKER_REGISTRY_SERVER_URL" {
   type        = string
   description = "The docker url"
@@ -47,6 +48,12 @@ variable "SECRET_KEY" {
   sensitive   = true
 
 }
+
+variable "linux_fx_version" {
+  description = "Docker image to pull"
+  default     = "DOCKER|sultanshaikh50/todo-app-prod:latest"
+}
+
 
 
 

@@ -1,12 +1,21 @@
 terraform {
-  required_version = ">= 0.12"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = ">= 2.49"
     }
   }
+  backend "azurerm" {
+    resource_group_name  = "OpenCohort1_SultanShaikh_ProjectExercise"
+    storage_account_name = "tfstate007ss"
+    container_name       = "tfstate007ss"
+    key                  = "terraform.tfstate"
+  }
 }
+provider "azurerm" {
+  features {}
+}
+
 resource "azurerm_cosmosdb_account" "main" {
   name                = "${var.prefix}-cosmosdb-account"
   resource_group_name = var.resource_group_name
@@ -32,7 +41,7 @@ resource "azurerm_cosmosdb_account" "main" {
     failover_priority = 0
   }
 
-  #lifecycle { prevent_destroy = var.prevent_destroy }
+  lifecycle { prevent_destroy = false }
 }
 
 data "azurerm_cosmosdb_account" "main" {
