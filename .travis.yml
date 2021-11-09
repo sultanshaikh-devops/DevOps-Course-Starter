@@ -6,7 +6,7 @@ service:
 
 install: 
 - wget https://releases.hashicorp.com/terraform/"$TF_VERSION"/terraform_"$TF_VERSION"_linux_amd64.zip 
-- unzip terraform_"$TF_VERSION"_linux_amd64.zip 
+- unzip -o terraform_"$TF_VERSION"_linux_amd64.zip 
 - sudo mv terraform /usr/local/bin/ 
 - rm terraform_"$TF_VERSION"_linux_amd64.zip 
 
@@ -18,6 +18,7 @@ jobs:
       - docker run --env-file .env.test --entrypoint poetry todo-app-test:latest run pytest tests
       - cd ./terraform/dev
       - terraform init
+      - terraform plan
       - terraform apply -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
       - export TEST_MONGO_CONNECTION_STRING="$(terraform output -raw test_cosmosdb_connection_string)"
       - echo "$MONGO_CONNECTION_STRING"
