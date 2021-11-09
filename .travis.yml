@@ -33,7 +33,7 @@ jobs:
       - cd ./terraform_env/dev
       - terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
       - cd ..
-      if: branch != master
+      if: NOT (branch == master)
         - cd prod
         - terraform init
         - terraform apply -var "prefix=prod" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -var "DOCKER_REGISTRY_SERVER_USERNAME='$dockerUsername'" -var "DOCKER_REGISTRY_SERVER_PASSWORD='$dockerPassword'" -var "GITHUB_CLIENT_ID=fe94565315d9adc854ab" -var "GITHUB_CLIENT_SECRET=efb0157b6eeacc62488467835f4d3c95995c4f3b" -var "MONGODB_COLLECTIONNAME='$MONGODB_COLLECTIONNAME'" -var "SECRET_KEY='$SECRET_KEY'" -auto-approve
