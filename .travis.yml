@@ -13,38 +13,30 @@ install:
 jobs:  
   include:
     - stages: 
-    - name: Perform Validation
+    - name: Build_Test_Destory_Envirnoment
       script:
-      - CWD="$(pwd)"
-      - echo $CWD
       - cd terraform_env/dev
       - terraform init
-      - terraform plan -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise"
-      - terraform apply -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
+      - terraform plan -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME"
+      - terraform apply -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -auto-approve
       - export MONGO_CONNECTION_STRING="$(terraform output -raw test_cosmosdb_connection_string)"
       - cd ..
       - cd ..
       - docker-compose -f docker-compose-dev.yml up -d --build
       - docker run --env-file .env.test --entrypoint poetry todo-app-test:latest run pytest tests
-      - echo "$MONGO_CONNECTION_STRING"
-      - docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
+      - docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTION_NAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
       - docker stop $(docker ps --format "{{.ID}}")
-      - TWD="$(pwd)"
-      - echo $TWD
       - cd ./terraform_env/dev
-      #- terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
       - cd ..
-    - name: Update or create az web app
-      if: branch != master
+    - name: Create_Update_Azure_Web_App
+      if: branch = master
       script:
       - cd terraform_env/prod
       - terraform init
-      - terraform plan -var "prefix=prod" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -var "DOCKER_REGISTRY_SERVER_USERNAME=$dockerUsername" -var "DOCKER_REGISTRY_SERVER_PASSWORD=$dockerPassword" -var "GITHUB_CLIENT_ID=fe94565315d9adc854ab" -var "GITHUB_CLIENT_SECRET=efb0157b6eeacc62488467835f4d3c95995c4f3b" -var "MONGODB_COLLECTIONNAME=$MONGODB_COLLECTIONNAME" -var "SECRET_KEY=$SECRET_KEY"
-      - terraform apply -var "prefix=prod" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -var "DOCKER_REGISTRY_SERVER_USERNAME=$dockerUsername" -var "DOCKER_REGISTRY_SERVER_PASSWORD=$dockerPassword" -var "GITHUB_CLIENT_ID=fe94565315d9adc854ab" -var "GITHUB_CLIENT_SECRET=efb0157b6eeacc62488467835f4d3c95995c4f3b" -var "MONGODB_COLLECTIONNAME=$MONGODB_COLLECTIONNAME" -var "SECRET_KEY=$SECRET_KEY" -auto-approve
+      - terraform plan -var "prefix=prod" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -var "DOCKER_REGISTRY_SERVER_USERNAME=$DOCKER_USERNAME" -var "DOCKER_REGISTRY_SERVER_PASSWORD=$DOCKER_PASSWORD" -var "GITHUB_CLIENT_ID=$PROD_GITHUB_CLIENT_ID" -var "GITHUB_CLIENT_SECRET=$PROD_GITHUB_CLIENT_SECRET" -var "MONGODB_COLLECTION_NAME=$MONGODB_COLLECTION_NAME" -var "SECRET_KEY=$SECRET_KEY"
+      - terraform apply -var "prefix=prod" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -var "DOCKER_REGISTRY_SERVER_USERNAME=$dockerUsername" -var "DOCKER_REGISTRY_SERVER_PASSWORD=$dockerPassword" -var "GITHUB_CLIENT_ID=$PROD_GITHUB_CLIENT_ID" -var "GITHUB_CLIENT_SECRET=$PROD_GITHUB_CLIENT_SECRET" -var "MONGODB_COLLECTION_NAME=$MONGODB_COLLECTION_NAME" -var "SECRET_KEY=$SECRET_KEY" -auto-approve
       - export MONGO_CONNECTION_STRING="$(terraform output -raw cosmos_connection_string)"
-      - echo "$MONGO_CONNECTION_STRING"
       - export WEBHOOK_URL="$(terraform output -raw cd_webhook)"
-      - echo "$WEBHOOK_URL"
       
 before_deploy:
 - docker build --target production --tag $dockerUsername/todo-app-prod:latest .
@@ -54,51 +46,13 @@ before_deploy:
 provider: script
 script: bash ./webhook.sh
 on:
-  branch: mod12
+  branch: master
 
-# jobs:
-#   include:
-#     - stage: build and test
-#       script:
-#       - docker-compose -f docker-compose-dev.yml up -d --build
-#       - docker run --env-file .env.test --entrypoint poetry
-#         todo-app-test:latest run pytest tests
-      
-#       - docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET  --entrypoint poetry
-#         todo-app-test:latest run pytest tests_e2e
-
-# install: 
-# - wget https://releases.hashicorp.com/terraform/"$TF_VERSION"/terraform_"$TF_VERSION"_linux_amd64.zip 
-# - unzip terraform_"$TF_VERSION"_linux_amd64.zip 
-# - sudo mv terraform /usr/local/bin/ 
-# - rm terraform_"$TF_VERSION"_linux_amd64.zip 
-# - terraform init
-# - terraform apply -var  -auto-approve
-
-# before_deploy:
-# - docker build --target production --tag $dockerUsername/todo-app-prod:latest .
-# - echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
-# - docker push $dockerUsername/todo-app-prod:latest
-
-# deploy:
-#   provider: script
-#   script: bash ./deploy.sh
-#   on:
-#     branch: master
-  
-#   provider: script
-#   script: bash ./webhook.sh
-#   on:
-#     branch: master
-
-# after_success:
-# - echo "All done!"
-
-# notifications:
-#   slack:
-#     secure: YiIM7K38DkqusuSwbhcCleuiN2XiAdN9bDN7mclpqvAY/xvHswXlSfpMQM32BlZ1WGtnry9Gh8s9iwtPPjwd5vPxcvflIbQ8VJe4lkUjdiXOa32lvEUaewDBxNIh4vmeja3KTJQq15p10khKWvXagRJxZ3lNc8k4ZCCx/0j1DTDaNGXXH9ku/gHIW6e2H1ZsHp67r6/VhvndqTBKae6HXZqhVo8b5MHjH28utQjnH0TZOVD2knNV3oXtL2Xg0kIzfgS+JZR/kxpEyoOzjihAtNcznhODh2nDWqZQeCeuurjHL3uvY8D2Fo7TkyWbB9AbQlFdlIVhNMd2lr8+EsPpXwkobPgjH1zbJMOzChncxu40L/Ym8I8ZkhCiCJxbT9flX3kXHeNfkv0Qc8WwccUA7+hfWkO9P8C7M5L+lcaS+vr/vXz+6wfaAsooMM2zs/7543C0fgeOsTrxPWgBaO0hwUQlmNGGVwCXaFfM4Y242q7Xxb0iNmtkTu4t+nPuM1Tt7Ky2m9Fo8wWACUKp6WvPy87ugN1aIsmdWLkD9HETcqBPepxi7Y1wKRFA+G6ivzUIntCZf9l5JMBFte6OCYEkk4+2K6KQ7fpnNIJ/KHJDsEpE2MX/ZM4x5u9TO25wbDjEvG+ePc03ySjvXY9XKrlAPvgpFnaKY1DMo3sWEtPavos=
-#   email:
-#     recipients:
-#       - sultan.shaikh@hotmail.co.uk
-#     on_success: always
-#     on_failure: always
+notifications:
+  slack:
+    secure: YiIM7K38DkqusuSwbhcCleuiN2XiAdN9bDN7mclpqvAY/xvHswXlSfpMQM32BlZ1WGtnry9Gh8s9iwtPPjwd5vPxcvflIbQ8VJe4lkUjdiXOa32lvEUaewDBxNIh4vmeja3KTJQq15p10khKWvXagRJxZ3lNc8k4ZCCx/0j1DTDaNGXXH9ku/gHIW6e2H1ZsHp67r6/VhvndqTBKae6HXZqhVo8b5MHjH28utQjnH0TZOVD2knNV3oXtL2Xg0kIzfgS+JZR/kxpEyoOzjihAtNcznhODh2nDWqZQeCeuurjHL3uvY8D2Fo7TkyWbB9AbQlFdlIVhNMd2lr8+EsPpXwkobPgjH1zbJMOzChncxu40L/Ym8I8ZkhCiCJxbT9flX3kXHeNfkv0Qc8WwccUA7+hfWkO9P8C7M5L+lcaS+vr/vXz+6wfaAsooMM2zs/7543C0fgeOsTrxPWgBaO0hwUQlmNGGVwCXaFfM4Y242q7Xxb0iNmtkTu4t+nPuM1Tt7Ky2m9Fo8wWACUKp6WvPy87ugN1aIsmdWLkD9HETcqBPepxi7Y1wKRFA+G6ivzUIntCZf9l5JMBFte6OCYEkk4+2K6KQ7fpnNIJ/KHJDsEpE2MX/ZM4x5u9TO25wbDjEvG+ePc03ySjvXY9XKrlAPvgpFnaKY1DMo3sWEtPavos=
+  email:
+    recipients:
+      - sultan.shaikh@hotmail.co.uk
+    on_success: always
+    on_failure: always
