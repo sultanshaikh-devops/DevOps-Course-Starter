@@ -14,7 +14,7 @@ jobs:
   include:
     - stage: Testing and Validation
       script:
-      - cd "/home/travis/sultanshaikh-devops/DevOps-Course-Starter/terraform/dev/"
+      - cd "~/sultanshaikh-devops/DevOps-Course-Starter/terraform/dev/"
       - terraform init
       - terraform plan
       - terraform apply -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
