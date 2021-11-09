@@ -5,6 +5,19 @@
 ![GitHub](https://img.shields.io/github/license/sultanshaikh-devops/DevOps-Course-Starter)
 ![GitHub last commit](https://img.shields.io/github/last-commit/sultanshaikh-devops/DevOps-Course-Starter)
 
+## Module 10
+----
+* Link to HeroKu app: https://ss-todo-app.herokuapp.com/ 
+* Must have MongoDB setup
+* Register new OAuth App under your Github account 
+  * set Homepage URL: http://127.0.0.1:5000/home
+  * set Authorization callback URL: http://127.0.0.1:5000/github_login/github/authorized
+* Make a note of your Client ID and Client secrets
+  * Add these variables travis-ci required for end-to-end testing
+* First account login will get 'admin' role, all other new account login will have 'read' role.
+* 'write' role can be assigned to user by accessing user manager through menu but must be logged with 'admin' role account.
+* user logged with 'read' role will see all the action buttons disabled. 
+
 ## Module 9
 ---
 Link to HeroKu app: https://ss-todo-app.herokuapp.com/

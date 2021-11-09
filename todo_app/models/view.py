@@ -36,3 +36,9 @@ class ViewModel:
     def older_done_items(self):
         _done_ls = [item for item in self._items if item.dateLastActivity != datetime.datetime.strptime((datetime.date.today()).strftime("%Y-%m-%d"), '%Y-%m-%d') and item.status == "Done"]
         return _done_ls
+    
+    @property
+    def allusers(self):
+        _users_ls = [item for item in self._items]
+        return _users_ls
+    

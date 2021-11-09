@@ -10,7 +10,7 @@ class Connection():
         self.mongo_db = self.client.todo_app
         self.collection = self.mongo_db[self.mongo_collection_name]
         
-class MongoDBClient(Connection):
+class mongodb_todo(Connection):
     def get_AllItems(self):
         return self.collection.find()
 
@@ -46,4 +46,5 @@ class MongoDBClient(Connection):
     
     def get_task(self, id):
         return self.collection.find_one({"_id": ObjectId(id)})
+    
     

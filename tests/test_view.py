@@ -1,6 +1,6 @@
 """Unit tests for view.py"""
 
-from todo_app.view import ViewModel
+from todo_app.models.view import ViewModel
 from todo_app.models.card import Card
 import datetime
 
