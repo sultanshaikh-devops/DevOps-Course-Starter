@@ -37,7 +37,7 @@
           <tr class="to-do-task">
             <td style="display:none">{{ task.id }}</td>
             <td>{{ task.name }}</td>
-            <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
+            <td>{{ (task.due) }}</td>
             <td>{{ task.status }}</td>
             <td>
               {% if strRole == False %}

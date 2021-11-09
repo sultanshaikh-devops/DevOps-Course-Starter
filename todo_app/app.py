@@ -175,11 +175,12 @@ def create_app():
     @login_required
     def get_previous_done_tasks():
         cardslist = []
-        qry = {
-            "status": "Done",
-            "dateLastActivity": {"$lt": datetime.datetime.strptime((datetime.date.today()).strftime("%Y-%m-%d"), '%Y-%m-%d')}    
-        }
-        items = todo.get_qryItems(qry)
+        # qry = {
+        #     "status": "Done",
+        #     "dateLastActivity": {"$lt": datetime.datetime.strptime((datetime.date.today()).strftime("%Y-%m-%d"), '%Y-%m-%d')}    
+        # }
+        # items = todo.get_qryItems(qry)
+        items = todo.get_older_done_task()
         for item in items:
             cardslist.append(Card(item))
         item_view_model = ViewModel(cardslist)
@@ -191,11 +192,12 @@ def create_app():
     @login_required
     def get_today_done_tasks():
         cardslist = []
-        qry = {
-            "status": "Done",
-            "dateLastActivity": datetime.datetime.strptime((datetime.date.today()).strftime("%Y-%m-%d"), '%Y-%m-%d')    
-        }
-        items = todo.get_qryItems(qry)
+        # qry = {
+        #     "status": "Done",
+        #     "dateLastActivity": datetime.datetime.strptime((datetime.date.today()).strftime("%Y-%m-%d"), '%Y-%m-%d')    
+        # }
+        # items = todo.get_qryItems(qry)
+        items = todo.get_today_done_task()
         for item in items:
             cardslist.append(Card(item))
         item_view_model = ViewModel(cardslist)

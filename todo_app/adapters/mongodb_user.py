@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 class Connection():    
     def __init__(self): 
         self.mongo_connection_string = os.environ['MONGO_CONNECTION_STRING']
-        self.mongo_collection_name = os.environ['MONGODB_COLLECTIONNAME']
+        self.mongo_collection_name = os.environ['MONGODB_COLLECTION_NAME']
         self.client = pymongo.MongoClient(self.mongo_connection_string, ssl_cert_reqs=ssl.CERT_NONE)
         self.mongo_db = self.client.todo_app
         self.collection = self.mongo_db.users
