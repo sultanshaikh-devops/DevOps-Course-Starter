@@ -13,7 +13,7 @@ class ViewModel:
         _todo_ls = []
         for item in self.items:
             if item.status == "To Do":
-                item.due = (item.due).strftime("%Y-%m-%d")
+                item.due = datetime.datetime.strptime(item.due, '%Y-%m-%d')
                 _todo_ls.append(item)
         #_todo_ls = [item for item in self._items if item.status == "To Do"] 
         return _todo_ls
