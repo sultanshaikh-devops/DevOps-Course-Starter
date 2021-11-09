@@ -12,22 +12,43 @@ install:
 
 jobs:  
   include:
-    - stage: Build and Test
+    - stage: Testing and Validation
       script:
       - docker-compose -f docker-compose-dev.yml up -d --build
       - docker run --env-file .env.test --entrypoint poetry todo-app-test:latest run pytest tests
       - terraform init
-      - terraform apply test.tf -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
+      - terraform apply-var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
       - export DEV_MONGO_CONNECTION_STRING="$(terraform output -raw dev_cosmosdb_connection_string)"
       - echo "$MONGO_CONNECTION_STRING"
-      - docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
-      - terraform destroy test.tf -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve        
+      - echo "$DEV_MONGO_CONNECTION_STRING"
+      - docker run -e DEV_MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
+      - terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
+    # - stage: Docker Build and Publish
+    #   if: branch = master
+    #     - docker build --target production --tag $dockerUsername/todo-app-prod:latest .
+    #     - echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
+    #     - docker push $dockerUsername/todo-app-prod:latest
+    # - stage: Create or Update Webapp
+    #   if: branch = master
+    #     - terraform init
+    #     - terraform apply prod.tf -var "prefix=prod" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
+    #     - export MONGO_CONNECTION_STRING="$(terraform output -raw prod_cosmosdb_connection_string)"
+    #     - echo "$MONGO_CONNECTION_STRING"
+    #     - docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
+        
 
-before_deploy:
-- docker build --target production --tag $dockerUsername/todo-app-prod:latest .
-- echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
-- docker push $dockerUsername/todo-app-prod:latest
 
+
+
+# deploy:
+#   provider: script
+#   script: 
+#     - terraform init
+#     - terraform apply test.tf -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
+#     - export DEV_MONGO_CONNECTION_STRING="$(terraform output -raw dev_cosmosdb_connection_string)"
+#     - echo "$MONGO_CONNECTION_STRING"
+#   on:
+#     branch: master
 
 # jobs:
 #   include:
