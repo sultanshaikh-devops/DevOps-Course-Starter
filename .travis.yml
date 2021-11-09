@@ -14,7 +14,8 @@ jobs:
   include:
     - stage: Perform Validation
       script:
-      - echo "$(pwd)"
+      - CWD="$(pwd)"
+      - echo $CWD
       - cd terraform_env/dev
       - terraform init
       - terraform plan -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise"
