@@ -12,13 +12,15 @@ install:
 
 jobs:  
   include:
-    - stage: Testing and Validation
-      script:
-      - cd "~/sultanshaikh-devops/DevOps-Course-Starter/terraform/dev/"
+    - stage: Deploy test cosmos db
+      script: 
+      - cd terraform/dev
       - terraform init
       - terraform plan
       - terraform apply -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
       - export TEST_MONGO_CONNECTION_STRING="$(terraform output -raw test_cosmosdb_connection_string)"
+    - stage: Run pytests
+      script:
       - cd ..
       - cd ..
       - docker-compose -f docker-compose-dev.yml up -d --build
@@ -26,6 +28,8 @@ jobs:
       - echo "$MONGO_CONNECTION_STRING"
       - echo "$TEST_MONGO_CONNECTION_STRING"
       - docker run -e Test_MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
+    - stage: Destoty test cosmos db
+      script:
       - cd terraform/dev
       - terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
     - stage: Docker Build and Publish
