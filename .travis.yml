@@ -19,31 +19,31 @@ jobs:
       - terraform plan
       - terraform apply -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
       - export TEST_MONGO_CONNECTION_STRING="$(terraform output -raw test_cosmosdb_connection_string)"
-    - stage: Run pytests
-      script:
-      - cd ..
-      - cd ..
-      - docker-compose -f docker-compose-dev.yml up -d --build
-      - docker run --env-file .env.test --entrypoint poetry todo-app-test:latest run pytest tests
-      - echo "$MONGO_CONNECTION_STRING"
-      - echo "$TEST_MONGO_CONNECTION_STRING"
-      - docker run -e Test_MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
-    - stage: Destoty test cosmos db
-      script:
-      - cd terraform/dev
-      - terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
-    - stage: Docker Build and Publish
-      if: branch = master
-        - docker build --target production --tag $dockerUsername/todo-app-prod:latest .
-        - echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
-        - docker push $dockerUsername/todo-app-prod:latest
-    - stage: Create or Update Webapp
-      before_script: cd terr_prod
-      if: branch = master
-        - terraform init
-        - terraform apply -var "prefix=prod" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -var "DOCKER_REGISTRY_SERVER_USERNAME='$dockerUsername'" -var "DOCKER_REGISTRY_SERVER_PASSWORD='$dockerPassword'" -var "GITHUB_CLIENT_ID=fe94565315d9adc854ab" -var "GITHUB_CLIENT_SECRET=efb0157b6eeacc62488467835f4d3c95995c4f3b" -var "MONGODB_COLLECTIONNAME='$MONGODB_COLLECTIONNAME'" -var "SECRET_KEY='$SECRET_KEY'" -auto-approve
-        - export MONGO_CONNECTION_STRING="$(terraform output -raw cosmos_connection_string)"
-        - echo "$MONGO_CONNECTION_STRING"
+    # - stage: Run pytests
+    #   script:
+    #   - cd ..
+    #   - cd ..
+    #   - docker-compose -f docker-compose-dev.yml up -d --build
+    #   - docker run --env-file .env.test --entrypoint poetry todo-app-test:latest run pytest tests
+    #   - echo "$MONGO_CONNECTION_STRING"
+    #   - echo "$TEST_MONGO_CONNECTION_STRING"
+    #   - docker run -e Test_MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
+    # - stage: Destoty test cosmos db
+    #   script:
+    #   - cd terraform/dev
+    #   - terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
+    # - stage: Docker Build and Publish
+    #   if: branch = master
+    #     - docker build --target production --tag $dockerUsername/todo-app-prod:latest .
+    #     - echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
+    #     - docker push $dockerUsername/todo-app-prod:latest
+    # - stage: Create or Update Webapp
+    #   before_script: cd terr_prod
+    #   if: branch = master
+    #     - terraform init
+    #     - terraform apply -var "prefix=prod" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -var "DOCKER_REGISTRY_SERVER_USERNAME='$dockerUsername'" -var "DOCKER_REGISTRY_SERVER_PASSWORD='$dockerPassword'" -var "GITHUB_CLIENT_ID=fe94565315d9adc854ab" -var "GITHUB_CLIENT_SECRET=efb0157b6eeacc62488467835f4d3c95995c4f3b" -var "MONGODB_COLLECTIONNAME='$MONGODB_COLLECTIONNAME'" -var "SECRET_KEY='$SECRET_KEY'" -auto-approve
+    #     - export MONGO_CONNECTION_STRING="$(terraform output -raw cosmos_connection_string)"
+    #     - echo "$MONGO_CONNECTION_STRING"
         #- docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
         
 
@@ -95,14 +95,14 @@ jobs:
 #   on:
 #     branch: master
 
-after_success:
-- echo "All done!"
+# after_success:
+# - echo "All done!"
 
-notifications:
-  slack:
-    secure: YiIM7K38DkqusuSwbhcCleuiN2XiAdN9bDN7mclpqvAY/xvHswXlSfpMQM32BlZ1WGtnry9Gh8s9iwtPPjwd5vPxcvflIbQ8VJe4lkUjdiXOa32lvEUaewDBxNIh4vmeja3KTJQq15p10khKWvXagRJxZ3lNc8k4ZCCx/0j1DTDaNGXXH9ku/gHIW6e2H1ZsHp67r6/VhvndqTBKae6HXZqhVo8b5MHjH28utQjnH0TZOVD2knNV3oXtL2Xg0kIzfgS+JZR/kxpEyoOzjihAtNcznhODh2nDWqZQeCeuurjHL3uvY8D2Fo7TkyWbB9AbQlFdlIVhNMd2lr8+EsPpXwkobPgjH1zbJMOzChncxu40L/Ym8I8ZkhCiCJxbT9flX3kXHeNfkv0Qc8WwccUA7+hfWkO9P8C7M5L+lcaS+vr/vXz+6wfaAsooMM2zs/7543C0fgeOsTrxPWgBaO0hwUQlmNGGVwCXaFfM4Y242q7Xxb0iNmtkTu4t+nPuM1Tt7Ky2m9Fo8wWACUKp6WvPy87ugN1aIsmdWLkD9HETcqBPepxi7Y1wKRFA+G6ivzUIntCZf9l5JMBFte6OCYEkk4+2K6KQ7fpnNIJ/KHJDsEpE2MX/ZM4x5u9TO25wbDjEvG+ePc03ySjvXY9XKrlAPvgpFnaKY1DMo3sWEtPavos=
-  email:
-    recipients:
-      - sultan.shaikh@hotmail.co.uk
-    on_success: always
-    on_failure: always
+# notifications:
+#   slack:
+#     secure: YiIM7K38DkqusuSwbhcCleuiN2XiAdN9bDN7mclpqvAY/xvHswXlSfpMQM32BlZ1WGtnry9Gh8s9iwtPPjwd5vPxcvflIbQ8VJe4lkUjdiXOa32lvEUaewDBxNIh4vmeja3KTJQq15p10khKWvXagRJxZ3lNc8k4ZCCx/0j1DTDaNGXXH9ku/gHIW6e2H1ZsHp67r6/VhvndqTBKae6HXZqhVo8b5MHjH28utQjnH0TZOVD2knNV3oXtL2Xg0kIzfgS+JZR/kxpEyoOzjihAtNcznhODh2nDWqZQeCeuurjHL3uvY8D2Fo7TkyWbB9AbQlFdlIVhNMd2lr8+EsPpXwkobPgjH1zbJMOzChncxu40L/Ym8I8ZkhCiCJxbT9flX3kXHeNfkv0Qc8WwccUA7+hfWkO9P8C7M5L+lcaS+vr/vXz+6wfaAsooMM2zs/7543C0fgeOsTrxPWgBaO0hwUQlmNGGVwCXaFfM4Y242q7Xxb0iNmtkTu4t+nPuM1Tt7Ky2m9Fo8wWACUKp6WvPy87ugN1aIsmdWLkD9HETcqBPepxi7Y1wKRFA+G6ivzUIntCZf9l5JMBFte6OCYEkk4+2K6KQ7fpnNIJ/KHJDsEpE2MX/ZM4x5u9TO25wbDjEvG+ePc03ySjvXY9XKrlAPvgpFnaKY1DMo3sWEtPavos=
+#   email:
+#     recipients:
+#       - sultan.shaikh@hotmail.co.uk
+#     on_success: always
+#     on_failure: always
