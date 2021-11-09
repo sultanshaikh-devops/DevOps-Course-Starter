@@ -35,11 +35,11 @@ jobs:
       - terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
       - cd ..
     - name: Update or create az web app
-      async: false
       if: branch != master
       script:
-      - cd prod
+      - cd terraform_env/prod
       - terraform init
+      - terraform plan -var "prefix=prod" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -var "DOCKER_REGISTRY_SERVER_USERNAME='$dockerUsername'" -var "DOCKER_REGISTRY_SERVER_PASSWORD='$dockerPassword'" -var "GITHUB_CLIENT_ID=fe94565315d9adc854ab" -var "GITHUB_CLIENT_SECRET=efb0157b6eeacc62488467835f4d3c95995c4f3b" -var "MONGODB_COLLECTIONNAME='$MONGODB_COLLECTIONNAME'" -var "SECRET_KEY='$SECRET_KEY'"
       - terraform apply -var "prefix=prod" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -var "DOCKER_REGISTRY_SERVER_USERNAME='$dockerUsername'" -var "DOCKER_REGISTRY_SERVER_PASSWORD='$dockerPassword'" -var "GITHUB_CLIENT_ID=fe94565315d9adc854ab" -var "GITHUB_CLIENT_SECRET=efb0157b6eeacc62488467835f4d3c95995c4f3b" -var "MONGODB_COLLECTIONNAME='$MONGODB_COLLECTIONNAME'" -var "SECRET_KEY='$SECRET_KEY'" -auto-approve
       - export MONGO_CONNECTION_STRING="$(terraform output -raw cosmos_connection_string)"
       - echo "$MONGO_CONNECTION_STRING"
