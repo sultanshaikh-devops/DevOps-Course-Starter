@@ -4,15 +4,9 @@ service:
 - docker
 - docker-compose
 
-# install: 
-# - wget https://releases.hashicorp.com/terraform/"$TF_VERSION"/terraform_"$TF_VERSION"_linux_amd64.zip 
-# - unzip terraform_"$TF_VERSION"_linux_amd64.zip 
-# - sudo mv terraform /usr/local/bin/ 
-# - rm terraform_"$TF_VERSION"_linux_amd64.zip 
-
 jobs:  
   include:
-    - stage: Install terraform
+    - stage: Perform Validation
       script:
       - wget https://releases.hashicorp.com/terraform/"$TF_VERSION"/terraform_"$TF_VERSION"_linux_amd64.zip 
       - unzip terraform_"$TF_VERSION"_linux_amd64.zip 
@@ -30,10 +24,8 @@ jobs:
       - echo "$MONGO_CONNECTION_STRING"
       - echo "$TEST_MONGO_CONNECTION_STRING"
       - docker run -e Test_MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
-    # - stage: Destoty test cosmos db
-    #   script:
-    #   - cd terraform/dev
-    #   - terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
+      - cd terraform/dev
+      - terraform destroy -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve 
     # - stage: Docker Build and Publish
     #   if: branch = master
     #     - docker build --target production --tag $dockerUsername/todo-app-prod:latest .
@@ -48,19 +40,10 @@ jobs:
     #     - echo "$MONGO_CONNECTION_STRING"
         #- docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
         
-
-
-
-
-# deploy:
-#   provider: script
-#   script: 
-#     - terraform init
-#     - terraform apply test.tf -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
-#     - export DEV_MONGO_CONNECTION_STRING="$(terraform output -raw dev_cosmosdb_connection_string)"
-#     - echo "$MONGO_CONNECTION_STRING"
-#   on:
-#     branch: master
+before_deploy:
+- docker build --target production --tag $dockerUsername/todo-app-prod:latest .
+- echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
+- docker push $dockerUsername/todo-app-prod:latest
 
 # jobs:
 #   include:
