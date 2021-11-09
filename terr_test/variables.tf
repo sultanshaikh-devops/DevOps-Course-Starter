@@ -8,17 +8,47 @@ variable "location" {
   description = "The Azure location where all resources in this  deployment should be created"
 }
 
-# variable "prevent_destroy" {
-#   type        = bool
-#   description = "Should cosmodb life cycle to prevent getting recreated every time terraform runs"
-#   default = false
-# }
-
-variable "resource_group_name" {
-  type = string
-  description = "The Azure resource name where all resources in this deployment should be created"
-  
+variable "DOCKER_REGISTRY_SERVER_URL" {
+  type        = string
+  description = "The docker url"
 }
+
+variable "DOCKER_REGISTRY_SERVER_PASSWORD" {
+  type        = string
+  description = "docker password"
+  sensitive   = true
+}
+
+variable "DOCKER_REGISTRY_SERVER_USERNAME" {
+  type        = string
+  description = "Docker user name"
+  sensitive   = true
+}
+
+variable "GITHUB_CLIENT_ID" {
+  type        = string
+  description = "Github Client ID"
+  sensitive   = true
+}
+variable "GITHUB_CLIENT_SECRET" {
+  type        = string
+  description = "Github client secret"
+  sensitive   = true
+}
+
+variable "MONGODB_COLLECTIONNAME" {
+  type        = string
+  description = "Mongo collection name"
+}
+
+variable "SECRET_KEY" {
+  type        = string
+  description = "Flask application secret key"
+  sensitive   = true
+
+}
+
+
 
 # variable "storage" {
 #   type = object({

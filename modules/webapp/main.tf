@@ -35,7 +35,7 @@ data "azurerm_cosmosdb_account" "main" {
 
 
 resource "azurerm_app_service" "main" {
-  name                = "${var.prefix}-todo-app"
+  name                = "${var.prefix}-ss-todo-app"
   location            = data.azurerm_resource_group.main.location
   resource_group_name = data.azurerm_resource_group.main.name
   app_service_plan_id = azurerm_app_service_plan.main.id
@@ -57,5 +57,6 @@ resource "azurerm_app_service" "main" {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = false
 
   }
+  lifecycle { prevent_destroy = true }
 }
 
