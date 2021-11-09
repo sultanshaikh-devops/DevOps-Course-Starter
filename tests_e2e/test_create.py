@@ -5,43 +5,17 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from dotenv import find_dotenv, load_dotenv
 import todo_app.app as app
-
-BASE_URL = "https://api.trello.com/1/"
-
-def create_trello_board(key,token):
-    params = {
-        'key': key,
-        'token': token,
-        'name': "E2E Testing",
-    }
-    response = requests.post(BASE_URL + 'boards', params=params)
-    return response
-
-def delete_trello_board(board_id,key,token):
-    params = {
-        'key': key,
-        'token': token,
-    }
-    response = requests.delete(BASE_URL + f'boards/{board_id}', params=params)
-    return response
+import pymongo
+from todo_app.mongodbclient import *
 
 @pytest.fixture(scope='module')
 def app_with_temp_board():
     # Loading environment variables 
     file_path = find_dotenv('.env')
     load_dotenv(file_path, override=True)
-    
-    API_KEY = os.environ.get('TRELLO_API_KEY')
-    TOKEN = os.environ.get('TRELLO_API_SECRET')
 
-    # Create the new board and save env to file     
-    create_board_response = create_trello_board(key=API_KEY,token=TOKEN)
-    if create_board_response.status_code == 200:
-        os.environ['TRELLO_BOARD_ID'] = create_board_response.json()['id']
-        board_name = 'E2E Testing'
-        os.environ['TRELLO_BOARD_NAME'] = board_name
-    else:
-        raise Exception(f'create board failure {create_board_response.status_code}')
+    # Create the new collection and save env to file   
+    os.environ['MONGODB_COLLECTIONNAME'] = "tasks"
     
     # construct the new application
     application = app.create_app()
@@ -54,12 +28,9 @@ def app_with_temp_board():
 
     # Tear Down
     thread.join(1)
-    del_board_response = delete_trello_board(os.environ.get('TRELLO_BOARD_ID'),key=API_KEY,token=TOKEN)
-    if del_board_response.status_code == 200:
-        print(f'Board deleted passed {del_board_response.status_code}')
-        os.environ['TRELLO_BOARD_NAME'] = "ToDo"
-    else:
-        print(f'Board delete failed {del_board_response.status_code}')
+    mongo = MongoDBClient()
+    mongo.collection.drop()
+
 
 @pytest.fixture(scope="module")
 def driver():
@@ -79,7 +50,7 @@ def test_create_task(driver, app_with_temp_board):
     description_element = driver.find_element_by_id('descarea')
     description_element.send_keys("Description E2E Test")
     description_element.submit()
-    driver.implicitly_wait(3)
+    driver.implicitly_wait(10)
     task = driver.find_element_by_class_name('to-do-task')
     assert task != None
     assert "E2E Testing Task 1" in driver.page_source
@@ -91,13 +62,13 @@ def test_complete_task(driver, app_with_temp_board):
     status_element = driver.find_element_by_id('status')
     status_element.send_keys(Keys.DOWN)
     status_element.submit()
-    driver.implicitly_wait(3)
-    assert "In Progress" in driver.page_source
+    driver.implicitly_wait(10)
+    assert "Doing" in driver.page_source
 
 @pytest.mark.depends(on=['test_complete_task'])
 def test_delete_task(driver, app_with_temp_board):
     delete = driver.find_element_by_xpath("//a[contains(text(), 'Delete')]")
     delete.click()
-    driver.implicitly_wait(3)   
+    driver.implicitly_wait(10)   
     assert "E2E Testing Task 2" not in driver.page_source
 

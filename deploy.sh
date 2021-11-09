@@ -5,4 +5,3 @@ echo "$HEROKU_API_KEY" | docker login --username="$HEROKU_USERNAME" --password-s
 heroku container:login
 docker push registry.heroku.com/ss-todo-app/web
 heroku container:release web --app ss-todo-app
-

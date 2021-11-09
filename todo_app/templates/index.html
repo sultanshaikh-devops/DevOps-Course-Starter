@@ -32,8 +32,8 @@
           {% for task in view_model.todo %}
           <tr class="to-do-task">
             <td style="display:none">{{ task.id }}</td>
-            <td>{{ task.title }}</td>
-            <td>{{ task.due }}</td>
+            <td>{{ task.name }}</td>
+            <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
             <td>{{ task.status }}</td>
             <td>
               <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
@@ -64,8 +64,8 @@
           {% for task in view_model.doing %}
           <tr>
             <td style="display:none">{{ task.id }}</td>
-            <td>{{ task.title }}</td>
-            <td>{{ task.due }}</td>
+            <td>{{ task.name }}</td>
+            <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
             <td>{{ task.status }}</td>
             <td>
               <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
@@ -96,8 +96,8 @@
         {% for task in view_model.show_all_done_items %}
         <tr>
           <td style="display:none">{{ task.id }}</td>
-          <td>{{ task.title }}</td>
-          <td>{{ task.due }}</td>
+          <td>{{ task.name }}</td>
+          <td>{{ (task.due).strftime("%Y-%m-%d") }}</td>
           <td>{{ task.status }}</td>
           <td>
             <a class="btn btn-outline-success btn-group-sm" href='/edit/{{task.id}}'>Edit</button>
