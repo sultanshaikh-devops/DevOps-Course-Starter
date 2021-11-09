@@ -13,6 +13,7 @@ jobs:
       - docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTIONNAME -e SECRET_KEY --entrypoint poetry
         todo-app-test:latest run pytest tests_e2e
 
+
 before_deploy:
 - docker build --target production --tag $dockerUsername/todo-app-prod:latest .
 - echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
