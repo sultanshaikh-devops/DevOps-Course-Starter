@@ -16,7 +16,7 @@ jobs:
       script: 
       - cd terraform_env/dev
       - terraform init
-      - terraform plan
+      - terraform plan -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
       - terraform apply -var "prefix=test" -var "location=uksouth" -var "resource_group_name=OpenCohort1_SultanShaikh_ProjectExercise" -auto-approve
       - export TEST_MONGO_CONNECTION_STRING="$(terraform output -raw test_cosmosdb_connection_string)"
     # - stage: Run pytests
