@@ -38,6 +38,8 @@ jobs:
       - terraform apply -var "prefix=prod" -var "location=$LOCATION" -var "RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME" -var "DOCKER_REGISTRY_SERVER_USERNAME=$dockerUsername" -var "DOCKER_REGISTRY_SERVER_PASSWORD=$dockerPassword" -var "GITHUB_CLIENT_ID=$PROD_GITHUB_CLIENT_ID" -var "GITHUB_CLIENT_SECRET=$PROD_GITHUB_CLIENT_SECRET" -var "MONGODB_COLLECTION_NAME=$MONGODB_COLLECTION_NAME" -var "SECRET_KEY=$SECRET_KEY" -auto-approve
       - export MONGO_CONNECTION_STRING="$(terraform output -raw cosmos_connection_string)"
       - export WEBHOOK_URL="$(terraform output -raw cd_webhook)"
+      - cd ..
+      - cd ..
       
 before_deploy:
 - docker build --target production --tag $DOCKER_USERNAME/todo-app-prod:latest .
