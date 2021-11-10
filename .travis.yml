@@ -44,10 +44,11 @@ before_deploy:
 - echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
 - docker push $dockerUsername/todo-app-prod:latest
 
-provider: script
-script: bash ./webhook.sh
-on:
-  branch: mod12
+deploy:
+  provider: script
+  script: bash ./webhook.sh
+  on:
+    branch: mod12
 
 notifications:
   slack:
