@@ -18,7 +18,7 @@ provider "azurerm" {
 
 resource "azurerm_cosmosdb_account" "main" {
   name                = "${var.prefix}-cosmosdb-account"
-  resource_group_name = var.resource_group_name
+  resource_group_name = var.RESOURCE_GROUP_NAME
   location            = var.location
   offer_type          = "Standard"
   kind                = "MongoDB"
@@ -46,7 +46,7 @@ resource "azurerm_cosmosdb_account" "main" {
 
 data "azurerm_cosmosdb_account" "main" {
   name                = "${var.prefix}-cosmosdb-account"
-  resource_group_name = var.resource_group_name
+  resource_group_name = var.RESOURCE_GROUP_NAME
   depends_on = [
     azurerm_cosmosdb_account.main,
   ]
@@ -54,7 +54,7 @@ data "azurerm_cosmosdb_account" "main" {
 
 
 data "azurerm_resource_group" "main" {
-  name = var.resource_group_name
+  name = var.RESOURCE_GROUP_NAME
 }
 
 resource "azurerm_app_service_plan" "main" {
@@ -86,7 +86,7 @@ resource "azurerm_app_service" "main" {
     "DOCKER_REGISTRY_SERVER_USERNAME"     = var.DOCKER_REGISTRY_SERVER_USERNAME
     "GITHUB_CLIENT_ID"                    = var.GITHUB_CLIENT_ID
     "GITHUB_CLIENT_SECRET"                = var.GITHUB_CLIENT_SECRET
-    "MONGODB_COLLECTION_NAME"              = var.MONGODB_COLLECTION_NAME
+    "MONGODB_COLLECTION_NAME"             = var.MONGODB_COLLECTION_NAME
     "SECRET_KEY"                          = var.SECRET_KEY
     "OAUTHLIB_INSECURE_TRANSPORT"         = false
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = false
