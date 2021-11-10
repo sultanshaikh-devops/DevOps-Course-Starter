@@ -12,8 +12,7 @@ install:
 
 jobs:  
   include:
-    - stages: 
-    - name: Build_Test_Destory_Environment
+    - stage: Test
       script:
       - cd terraform_env/dev
       - terraform init
@@ -28,12 +27,12 @@ jobs:
       - docker stop $(docker ps --format "{{.ID}}")
       - cd ./terraform_env/dev
       #- terraform destroy -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -auto-approve
-      - cd ..
-      - cd ..
+    - stage: Deploy
+      script:
       - docker build --target production --tag $DOCKER_USERNAME/todo-app-prod:latest .
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker push $DOCKER_USERNAME/todo-app-prod:latest
-    - name: Create_Update_Azure_Web_App
+    - stage: Publish
       if: branch != master
       script:
       - cd terraform_env/prod
@@ -44,17 +43,20 @@ jobs:
       - export WEBHOOK_URL="$(terraform output -raw cd_webhook)"
       - cd ..
       - cd ..
+    - stage: Publish
+      if: branch != master
+      script: bash ./webhook.s
 
 # before_deploy:
 # - docker build --target production --tag $DOCKER_USERNAME/todo-app-prod:latest .
 # - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 # - docker push $DOCKER_USERNAME/todo-app-prod:latest
 
-deploy:
-  provider: script
-  script: bash ./webhook.sh
-  on:
-    branch: mod12
+# deploy:
+#   provider: script
+#   script: bash ./webhook.sh
+#   on:
+#     branch: mod12
 
 notifications:
   slack:
