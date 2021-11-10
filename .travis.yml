@@ -40,9 +40,9 @@ jobs:
       - export WEBHOOK_URL="$(terraform output -raw cd_webhook)"
       
 before_deploy:
-- docker build --target production --tag $dockerUsername/todo-app-prod:latest .
-- echo "$dockerPassword" | docker login -u "$dockerUsername" --password-stdin
-- docker push $dockerUsername/todo-app-prod:latest
+- docker build --target production --tag $DOCKER_USERNAME/todo-app-prod:latest .
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- docker push $DOCKER_USERNAME/todo-app-prod:latest
 
 deploy:
   provider: script
