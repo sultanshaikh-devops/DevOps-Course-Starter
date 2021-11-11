@@ -1,5 +1,8 @@
-import os, ssl, pymongo
+import os, ssl, pymongo, functools
 from bson.objectid import ObjectId
+from flask import  render_template, current_app
+from flask_login import current_user
+
 
 class Connection():    
     def __init__(self): 
@@ -9,7 +12,7 @@ class Connection():
         self.mongo_db = self.client.todo_app
         self.collection = self.mongo_db.users
         
-class mongodb_user(Connection):
+class MongoDbUserService(Connection):
     def get_totalusercount(self):
         return self.collection.find().count()
     
@@ -44,39 +47,66 @@ class mongodb_user(Connection):
     def get_user(self, id):
         return self.collection.find_one({"_id": ObjectId(id)})
     
-    def IsRoleAdmin(self, username):
+    def IsRoleAdmin(self):
         resp = False
-        if username != '':
-            results = self.collection.find({"username": username})
+        if not (current_user.id is None):
+            results = self.collection.find({"username": current_user.id})
             for item in results:
                 if item['role'] == 'admin':
                     resp = True
         return resp
 
-    def IsRoleReader(self, username):
+    def IsRoleReader(self):
         resp = False
-        if username != '':
-            results = self.collection.find({"username": username})
+        if not (current_user.id is None):
+            results = self.collection.find({"username": current_user.id})
             for item in results:
                 if item['role'] == 'read':
                     resp = True
         return resp
     
-    def IsRoleWriter(self, username):
+    def IsRoleWriter(self):
         resp = False
-        if username != '':
-            results = self.collection.find({"username": username})
+        if not (current_user.id is None):
+            results = self.collection.find({"username": current_user.id})
             for item in results:
                 if item['role'] == 'write':
                     resp = True
         return resp
     
-    def IsDisable(self, username):
+    def IsDisable(self):
         disable = True
-        if username != '':
-            results = self.collection.find({"username": username})
+        if not (current_user.id is None):
+            results = self.collection.find({"username": current_user.id})
             for item in results:
                 if (item['role'] == 'write') or (item['role'] == 'admin'):
                     disable = False
         return disable
     
+    def hasRoleAdmin(self, func):
+        @functools.wraps(func)
+        def wrapper_hasRoleAdmin(*args, **kwargs):
+            results = self.collection.find({"username": current_user.id})
+            if not (results is None):
+                for item in results:
+                    if item['role'] != 'admin':
+                        return render_template("access_error.html",error="insufficient privileges!")
+                return func(*args, **kwargs)
+            else:
+                return render_template("error.html",error="Contact support for help.")
+        return wrapper_hasRoleAdmin
+    
+    def hasWritePermission(self, func):
+        @functools.wraps(func)
+        def wrapper_hasWritePermission(*args, **kwargs):
+            if current_app.config["LOGIN_DISABLED"]:
+                return func(*args, **kwargs)
+            results = self.collection.find({"username": current_user.id})
+            if not (results is None):
+                for item in results:
+                    if item['role'] == 'read':
+                        return render_template("access_error.html",error="insufficient privileges!")
+                return func(*args, **kwargs)            
+            else:
+                return render_template("error.html",error="Contact support for help.")
+        return wrapper_hasWritePermission
