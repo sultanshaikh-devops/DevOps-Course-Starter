@@ -45,35 +45,8 @@ class MongoDbUserService(Connection):
         return self.collection.update_one({"_id": ObjectId(id)},{"$set": post})
     
     def get_user(self, id):
-        return self.collection.find_one({"_id": ObjectId(id)})
-    
-    def IsRoleAdmin(self):
-        resp = False
-        if not (current_user.id is None):
-            results = self.collection.find({"username": current_user.id})
-            for item in results:
-                if item['role'] == 'admin':
-                    resp = True
-        return resp
-
-    def IsRoleReader(self):
-        resp = False
-        if not (current_user.id is None):
-            results = self.collection.find({"username": current_user.id})
-            for item in results:
-                if item['role'] == 'read':
-                    resp = True
-        return resp
-    
-    def IsRoleWriter(self):
-        resp = False
-        if not (current_user.id is None):
-            results = self.collection.find({"username": current_user.id})
-            for item in results:
-                if item['role'] == 'write':
-                    resp = True
-        return resp
-    
+        return self.collection.find_one({"_id": ObjectId(id)})    
+   
     def IsDisable(self):
         disable = True
         if not (current_user.id is None):

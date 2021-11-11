@@ -10,7 +10,6 @@ from todo_app.adapters.MongoDbUserService import *
 #Login
 from flask_dance.contrib.github import make_github_blueprint, github
 from flask_login import UserMixin, current_user, LoginManager, login_required, login_user, logout_user
-#from flask_dance.consumer import oauth_authorized
 
 class ReverseProxied(object):
     def __init__(self, app):
@@ -94,7 +93,7 @@ def create_app():
         if (app.config['LOGIN_DISABLED']):
             userRole = False
         else:
-            userRole = usermanager.IsDisable(current_user.id)
+            userRole = usermanager.IsDisable()
 
         for item in items:
             cardslist.append(Card(item))
@@ -169,7 +168,7 @@ def create_app():
         for item in items:
             cardslist.append(Card(item))
         item_view_model = ViewModel(cardslist)
-        userRole = usermanager.IsDisable(current_user.id)
+        userRole = usermanager.IsDisable()
         return render_template('previous_done_task.html', view_model=item_view_model, strRole=userRole)
 
     
@@ -181,7 +180,7 @@ def create_app():
         for item in items:
             cardslist.append(Card(item))
         item_view_model = ViewModel(cardslist)
-        userRole = usermanager.IsDisable(current_user.id)
+        userRole = usermanager.IsDisable()
         return render_template('today_done_task.html', view_model=item_view_model, strRole=userRole)
 
 ############# UserManagement ##########################
