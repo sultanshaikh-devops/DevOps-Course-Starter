@@ -30,10 +30,12 @@ In this module application and database has been moved to Azure Cloud. Travis CI
   * LOCATION                # i.e uksouth
 
 Next step make sure you have setup OAth App correctly:
-  * Homepage URL: https://prod-ss-todo-app.azurewebsites.net/home
-  * Authorization callback URL: https://prod-ss-todo-app.azurewebsites.net/github_login/github/authorized
+  * Homepage URL: https://prod-ss-todo-app.azurewebsites.net/
+  * Authorization callback URL: https://prod-ss-todo-app.azurewebsites.net/login/callback
 
-Update Terraform files (prod.tf and test.tf) to support {backend "azurerm"}, located inside folder terraform_env:
+* Update Terraform files (prod.tf and test.tf) to support {backend "azurerm"}, located inside folder terraform_env:
+* User Manager and logout options is located under top right-hand corner menu drop-down.
+
 
 ## Module 11
 ----
