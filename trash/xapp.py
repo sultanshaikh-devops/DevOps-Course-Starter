@@ -1,4 +1,4 @@
-import os, requests
+import os
 from todo_app.models.view import ViewModel
 from todo_app.models.card import Card
 from todo_app.models.user import User
@@ -8,6 +8,7 @@ from todo_app.adapters.mongodb_todo import *
 from todo_app.adapters.MongoDbUserService import *
 
 #Login
+from flask_dance.contrib.github import make_github_blueprint, github
 from flask_login import UserMixin, current_user, LoginManager, login_required, login_user, logout_user
 from oauthlib.oauth2 import WebApplicationClient
 
@@ -31,13 +32,9 @@ def create_app():
     app.config.from_object('todo_app.flask_config.Config')
     app.wsgi_app = ReverseProxied(app.wsgi_app)
 
-    client_id = os.environ['GITHUB_CLIENT_ID']
-    client_secret = os.environ['GITHUB_CLIENT_SECRET']
-    base_url="https://api.github.com"
-    authorization_url="https://github.com/login/oauth/authorize"
-    token_endpoint = "https://github.com/login/oauth/access_token"
+    gh_blueprint = make_github_blueprint(client_id=os.environ['GITHUB_CLIENT_ID'], client_secret=os.environ['GITHUB_CLIENT_SECRET'])
+    app.register_blueprint(gh_blueprint, url_prefix='/github_login')
 
-    client = WebApplicationClient(client_id)
     todo = mongodb_todo()
     usermanager = MongoDbUserService()
 
@@ -50,69 +47,32 @@ def create_app():
     
     @login_manager.unauthorized_handler
     def unauthenticated():
-        return redirect(url_for('login'))
+        return redirect(url_for('github_login'))
     
     @app.route('/logout')
     @login_required
     def logout():
         logout_user()
         session.clear()        
-        return redirect("https://github.com/logout")
+        github.blueprint.teardown_session
+        return render_template("close.html")
     
-    @app.route("/login")
-    def login():
-        request_uri = client.prepare_request_uri(
-            authorization_url,
-            redirect_uri=request.base_url + "/callback",
-            scope=None,
-        )
-        return redirect(request_uri)
-
-    @app.route("/login/callback")
-    def callback():
-        code = request.args.get("code")
-
-        # Prepare and send request to get tokens! 
-        token_url, headers, body = client.prepare_token_request(
-            token_endpoint,
-            authorization_response=request.url,
-            redirect_url=request.base_url,
-            code=code,
-        )
-
-        token_response = requests.post(
-            token_url,
-            headers=headers,
-            data=body,
-            auth=(client_id, client_secret),
-        )
-
-        if token_response.status_code != 200:
-            return redirect(url_for('login'))
-
-        json_data = token_response.content.decode('utf8').replace("'", '"')
-        # Parse the tokens!
-        client.parse_request_body_response(json_data)
-        userinfo_endpoint = "{}/user".format(base_url)
-        uri, headers, body = client.add_token(userinfo_endpoint)
-        userinfo_response = requests.get(uri, headers=headers, data=body)
-        if userinfo_response.ok:
-            account_info_json = userinfo_response.json()
-            currentUserName = str(account_info_json['login'])               
+    @app.route('/', methods=['GET'])
+    def github_login():
+        if not github.authorized:
+            return redirect(url_for('github.login')) 
+        account_info = github.get('/user')   
+        if account_info.ok:
+            account_info_json = account_info.json()
+            currentUserName = str(account_info_json['login'])                
             login_user(UserToLogin(currentUserName))
-
+            
             if usermanager.get_totalusercount() == 0:
                 usermanager.create_user(username=currentUserName,role="admin")
             
             if (usermanager.get_totalusercount() > 0) and (usermanager.get_findusercount(qry={"username": currentUserName}) == 0):
                 usermanager.create_user(username=currentUserName,role="read")
 
-        return redirect(url_for('get_index'))
-
-
-    @app.route('/', methods=['GET'])
-    @login_required
-    def sendhome():
         return redirect(url_for('get_index'))
 
 
