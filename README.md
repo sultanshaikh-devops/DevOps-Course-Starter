@@ -5,6 +5,13 @@
 ![GitHub](https://img.shields.io/github/license/sultanshaikh-devops/DevOps-Course-Starter)
 ![GitHub last commit](https://img.shields.io/github/last-commit/sultanshaikh-devops/DevOps-Course-Starter)
 
+## Module 11
+----
+Mongodb instance hosted on azure.
+TodoApp is also running on azure as web app.
+* You will need GitHub account
+* App URL: https://ss-todo-app.azurewebsites.net/
+
 ## Module 10
 ----
 * Link to HeroKu app: https://ss-todo-app.herokuapp.com/ 
