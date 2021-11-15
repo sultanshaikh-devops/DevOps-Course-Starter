@@ -13,3 +13,5 @@ variable "resource_group_name" {
   description = "The Azure resource name where all resources in this deployment should be created"
   
 }
+
+

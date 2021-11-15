@@ -21,6 +21,17 @@ variable "DOCKER_REGISTRY_SERVER_PASSWORD" {
   sensitive   = true
 }
 
+variable "LOG_LEVEL" {
+  type        = string
+  description = "Set logging level"
+  sensitive   = false
+}
+
+variable "LOGGLY_TOKEN" {
+  type        = string
+  description = "External logging api key"
+  sensitive   = true
+}
 variable "DOCKER_REGISTRY_SERVER_USERNAME" {
   type        = string
   description = "Docker user name"

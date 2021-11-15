@@ -90,6 +90,8 @@ resource "azurerm_app_service" "main" {
     "SECRET_KEY"                          = var.SECRET_KEY
     "OAUTHLIB_INSECURE_TRANSPORT"         = false
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = false
+    "LOG_LEVEL"                           = var.LOG_LEVEL
+    "LOGGLY_TOKEN"                        = var.LOGGLY_TOKEN
 
   }
   lifecycle { prevent_destroy = false }

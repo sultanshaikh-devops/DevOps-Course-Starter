@@ -63,6 +63,7 @@ class MongoDbUserService(Connection):
                 for item in results:
                     if item['role'] != 'admin':
                         return render_template("access_error.html",error="insufficient privileges!")
+                        
                 return func(*args, **kwargs)
             else:
                 return render_template("error.html",error="Contact support for help.")

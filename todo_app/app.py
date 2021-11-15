@@ -221,12 +221,13 @@ def create_app():
             desc = request.form['descarea']
         )        
         if response is not None:
-            app.logger.info("{} create new task".format(current_user.id), extra={
-                "method": "{}".format(request.method),
-                "requesterIpAddr": "{}".format(request.remote_addr),
-                "url": "{}".format(request.url),
-                "data": "name: {} due: {} desc: {}".format(request.form['title'], str(request.form['duedate']), request.form['descarea'])
-            })
+            if current_app.config["LOGIN_DISABLED"]==False:
+                app.logger.info("{} create new task".format(current_user.id), extra={
+                    "method": "{}".format(request.method),
+                    "requesterIpAddr": "{}".format(request.remote_addr),
+                    "url": "{}".format(request.url),
+                    "data": "name: {} due: {} desc: {}".format(request.form['title'], str(request.form['duedate']), request.form['descarea'])
+                })
             return redirect('/home')
         else:
             return render_template("error.html",error="failed to create task!")
@@ -255,12 +256,13 @@ def create_app():
             status = request.form['status']
         )
         if response is not None:
-            app.logger.info("{} update task".format(current_user.id), extra={
-                "method": "{}".format(request.method),
-                "requesterIpAddr": "{}".format(request.remote_addr),
-                "url": "{}".format(request.url),
-                "data": "id: {} name: {} due: {} desc: {} status: {}".format(id, request.form['title'], str(request.form['duedate']), request.form['descarea'], request.form['status'])
-            })
+            if current_app.config["LOGIN_DISABLED"]==False:
+                app.logger.info("{} update task".format(current_user.id), extra={
+                    "method": "{}".format(request.method),
+                    "requesterIpAddr": "{}".format(request.remote_addr),
+                    "url": "{}".format(request.url),
+                    "data": "id: {} name: {} due: {} desc: {} status: {}".format(id, request.form['title'], str(request.form['duedate']), request.form['descarea'], request.form['status'])
+                })
             return redirect('/home')
         else:
             return render_template("error.html", error="failed to update task!")
@@ -270,13 +272,14 @@ def create_app():
     @usermanager.hasWritePermission
     def delete(id):
         response = todo.delete_task(id=id)
-        if response is not None:
-            app.logger.info("{} deleted task".format(current_user.id), extra={
-                "method": "{}".format(request.method),
-                "requesterIpAddr": "{}".format(request.remote_addr),
-                "url": "{}".format(request.url),
-                "data": "id: {}".format(id)
-            })
+        if response is not None: 
+            if current_app.config["LOGIN_DISABLED"]==False:
+                app.logger.info("{} deleted task".format(current_user.id), extra={
+                    "method": "{}".format(request.method),
+                    "requesterIpAddr": "{}".format(request.remote_addr),
+                    "url": "{}".format(request.url),
+                    "data": "id: {}".format(id)
+                })
             return redirect('/home')
         else:
             return render_template("error.html",error="failed to delete task!") 

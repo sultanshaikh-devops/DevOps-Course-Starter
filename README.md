@@ -28,6 +28,8 @@ In this module application and database has been moved to Azure Cloud. Travis CI
   * WEBHOOK_URL             # set any value
   * RESOURCE_GROUP_NAME     #Azure Resource Group Name
   * LOCATION                # i.e uksouth
+  * LOG_LEVEL               #DEBUG or ERROR or INFO
+  * LOGGLY_TOKEN            
 
 Next step make sure you have setup OAth App correctly:
   * Homepage URL: https://prod-ss-todo-app.azurewebsites.net/
