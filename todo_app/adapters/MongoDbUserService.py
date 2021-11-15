@@ -3,7 +3,6 @@ from bson.objectid import ObjectId
 from flask import  render_template, current_app
 from flask_login import current_user
 
-
 class Connection():    
     def __init__(self): 
         self.mongo_connection_string = os.environ['MONGO_CONNECTION_STRING']
