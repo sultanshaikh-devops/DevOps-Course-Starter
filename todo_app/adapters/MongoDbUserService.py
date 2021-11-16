@@ -10,8 +10,9 @@ class Connection():
         self.client = pymongo.MongoClient(self.mongo_connection_string, ssl_cert_reqs=ssl.CERT_NONE)
         self.mongo_db = self.client.todo_app
         self.collection = self.mongo_db.users
-        
+       
 class MongoDbUserService(Connection):
+
     def get_totalusercount(self):
         return self.collection.find().count()
     

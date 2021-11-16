@@ -1,8 +1,3 @@
-# import logging
-# import time
-#from logging import exception
-#logging
-# import flask
 import os, requests
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_login import UserMixin, current_user, LoginManager, login_required, login_user, logout_user
