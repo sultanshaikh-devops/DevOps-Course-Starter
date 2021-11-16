@@ -7,8 +7,7 @@
 
 ## Module 12
 ----
-
-Application URL: https://prod-ss-todo-app.azurewebsites.net/home
+Application URL: https://prod-ss-todo-app.azurewebsites.net
 
 In this module application and database has been moved to Azure Cloud. Travis CI has been configured to make use of Terraform configuration to deploy two separate environment, one for validation (test) and other production. These are hard coded with prefix 'test' and 'prod'
 
