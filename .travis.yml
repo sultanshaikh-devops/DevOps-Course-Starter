@@ -13,6 +13,7 @@ install:
 jobs:  
   include:
     - stage: Test
+      if: branch != master
       script:
       - cd terraform_env/dev
       - terraform init
@@ -42,7 +43,7 @@ jobs:
       - export MONGO_CONNECTION_STRING="$(terraform output -raw cosmos_connection_string)"
       - export WEBHOOK_URL="$(terraform output -raw cd_webhook)"
     - stage: Web App Refresh
-      if: branch != master
+      if: branch = master
       script: bash ./webhook.sh
 
 notifications:
