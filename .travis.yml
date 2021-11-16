@@ -17,8 +17,8 @@ jobs:
       script:
       - cd terraform_env/dev
       - terraform init
-      - terraform plan -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME"
-      - terraform apply -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -auto-approve
+      - terraform plan -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -var "LOGGLY_TOKEN=$LOGGLY_TOKEN" -var "LOG_LEVEL=DEBUG"
+      - terraform apply -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -var "LOGGLY_TOKEN=$LOGGLY_TOKEN" -var "LOG_LEVEL=DEBUG" -auto-approve
       - export MONGO_CONNECTION_STRING="$(terraform output -raw test_cosmosdb_connection_string)"
       - cd ../..
       - docker-compose -f docker-compose-dev.yml up -d --build
