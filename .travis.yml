@@ -25,15 +25,15 @@ jobs:
       - docker run -e MONGO_CONNECTION_STRING -e MONGODB_COLLECTION_NAME -e SECRET_KEY -e GITHUB_CLIENT_ID -e GITHUB_CLIENT_SECRET --entrypoint poetry todo-app-test:latest run pytest tests_e2e
       - docker stop $(docker ps --format "{{.ID}}")
       - cd ./terraform_env/dev
-      #- terraform destroy -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -auto-approve
+      - terraform destroy -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -auto-approve
     - stage: Docker Push
-      if: branch != master
+      if: branch = master
       script:
       - docker build --target production --tag $DOCKER_USERNAME/todo-app-prod:latest .
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker push $DOCKER_USERNAME/todo-app-prod:latest
     - stage: Publish Production
-      if: branch != master
+      if: branch = master
       script:
       - cd terraform_env/prod
       - terraform init
