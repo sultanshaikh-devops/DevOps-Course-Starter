@@ -1,15 +1,15 @@
 import os, requests
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask_login import UserMixin, current_user, LoginManager, login_required, login_user, logout_user
+from oauthlib.oauth2 import WebApplicationClient
+from loggly.handlers import HTTPSHandler
+from pythonjsonlogger import jsonlogger
 from todo_app.models.view import ViewModel
 from todo_app.models.card import Card
 from todo_app.models.user import User
-
-from flask import Flask, render_template, request, redirect, url_for, session
 from todo_app.adapters.mongodb_todo import *
 from todo_app.adapters.MongoDbUserService import *
 
-#Login
-from flask_login import UserMixin, current_user, LoginManager, login_required, login_user, logout_user
-from oauthlib.oauth2 import WebApplicationClient
 
 class ReverseProxied(object):
     def __init__(self, app):
@@ -29,7 +29,14 @@ class UserToLogin (UserMixin):
 def create_app():
     app = Flask(__name__)
     app.config.from_object('todo_app.flask_config.Config')
+    app.logger.setLevel(app.config['LOG_LEVEL'])
     app.wsgi_app = ReverseProxied(app.wsgi_app)
+
+    if app.config['LOGGLY_TOKEN'] is not None:
+        handler = HTTPSHandler(f'https://logs-01.loggly.com/inputs/{app.config["LOGGLY_TOKEN"]}/tag/todo-app')
+        formatter = jsonlogger.JsonFormatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s %(requesterIpAddr)s")
+        handler.setFormatter(formatter)
+        app.logger.addHandler(handler)
 
     client_id = os.environ['GITHUB_CLIENT_ID']
     client_secret = os.environ['GITHUB_CLIENT_SECRET']
@@ -44,17 +51,48 @@ def create_app():
     login_manager = LoginManager()
     login_manager.init_app(app)
 
+
+    @app.errorhandler(Exception)
+    def handle_error(e):
+        app.logger.error('exception', extra={
+            "method": "{}".format(request.method),
+            "requesterIpAddr": "{}".format(request.remote_addr),
+            "url": "{}".format(request.url)
+        }, exc_info=True)
+
+        return render_template("error.html", error=str(e))
+    
+    @app.after_request
+    def after_request(response):
+        app.logger.info("after_request", extra={
+            "method": "{}".format(request.method),
+            "requesterIpAddr": "{}".format(request.remote_addr),
+            "url": "{}".format(request.url),
+            "status_code": "{}".format(response.status)
+        })
+        return response
+
     @login_manager.user_loader
     def load_user(user_id):        
         return UserToLogin(user_id)
     
     @login_manager.unauthorized_handler
     def unauthenticated():
+        app.logger.info("Unauthorized attemp made.", extra={
+            "method": "{}".format(request.method),
+            "requesterIpAddr": "{}".format(request.remote_addr),
+            "url": "{}".format(request.url)
+        })
         return redirect(url_for('login'))
     
     @app.route('/logout')
     @login_required
     def logout():
+        app.logger.info("User {} logged out of the system.".format(current_user.id), extra={
+            "method": "{}".format(request.method),
+            "requesterIpAddr": "{}".format(request.remote_addr),
+            "url": "{}".format(request.url)
+        })
         logout_user()
         session.clear()        
         return redirect("https://github.com/logout")
@@ -71,6 +109,11 @@ def create_app():
     @app.route("/login/callback")
     def callback():
         code = request.args.get("code")
+        app.logger.debug("{}".format(code), extra={
+            "method": "{}".format(request.method),
+            "requesterIpAddr": "{}".format(request.remote_addr),
+            "url": "{}".format(request.url)
+        })
 
         # Prepare and send request to get tokens! 
         token_url, headers, body = client.prepare_token_request(
@@ -100,12 +143,27 @@ def create_app():
             account_info_json = userinfo_response.json()
             currentUserName = str(account_info_json['login'])               
             login_user(UserToLogin(currentUserName))
+            app.logger.info("User logged in {}".format(current_user.id), extra={
+                "method": "{}".format(request.method),
+                "requesterIpAddr": "{}".format(request.remote_addr),
+                "url": "{}".format(request.url)
+            })
 
             if usermanager.get_totalusercount() == 0:
                 usermanager.create_user(username=currentUserName,role="admin")
+                app.logger.info("User logged in {} has been give admin level access.".format(current_user.id), extra={
+                    "method": "{}".format(request.method),
+                    "requesterIpAddr": "{}".format(request.remote_addr),
+                    "url": "{}".format(request.url)
+                })
             
             if (usermanager.get_totalusercount() > 0) and (usermanager.get_findusercount(qry={"username": currentUserName}) == 0):
                 usermanager.create_user(username=currentUserName,role="read")
+                app.logger.info("User logged in {} has been give read level access.".format(current_user.id), extra={
+                    "method": "{}".format(request.method),
+                    "requesterIpAddr": "{}".format(request.remote_addr),
+                    "url": "{}".format(request.url)
+                })
 
         return redirect(url_for('get_index'))
 
@@ -118,9 +176,9 @@ def create_app():
 
     ##### Core TODO_Tasks#####
     #error handling for 404
-    @app.errorhandler(404)
-    def not_found(e):
-        return render_template("error.html", error='resource not found!')
+    # @app.errorhandler(404)
+    # def not_found(e):
+    #     return render_template("error.html", error='resource not found!')
 
     @app.route('/contact')
     def contact():
@@ -157,7 +215,14 @@ def create_app():
             due = request.form['duedate'],
             desc = request.form['descarea']
         )        
-        if (str(response) != ""):
+        if response is not None:
+            if current_app.config["LOGIN_DISABLED"]==False:
+                app.logger.info("{} create new task".format(current_user.id), extra={
+                    "method": "{}".format(request.method),
+                    "requesterIpAddr": "{}".format(request.remote_addr),
+                    "url": "{}".format(request.url),
+                    "data": "name: {} due: {} desc: {}".format(request.form['title'], str(request.form['duedate']), request.form['descarea'])
+                })
             return redirect('/home')
         else:
             return render_template("error.html",error="failed to create task!")
@@ -168,7 +233,7 @@ def create_app():
     @usermanager.hasWritePermission
     def get_edit(id):
         item = todo.get_task(id=id)
-        if (str(item) != ""):
+        if item is not None:
             item_info = Card(item)
             return render_template('edit.html', task=item_info)
         else:
@@ -185,7 +250,14 @@ def create_app():
             due = request.form['duedate'],
             status = request.form['status']
         )
-        if (str(response) != ""):
+        if response is not None:
+            if current_app.config["LOGIN_DISABLED"]==False:
+                app.logger.info("{} update task".format(current_user.id), extra={
+                    "method": "{}".format(request.method),
+                    "requesterIpAddr": "{}".format(request.remote_addr),
+                    "url": "{}".format(request.url),
+                    "data": "id: {} name: {} due: {} desc: {} status: {}".format(id, request.form['title'], str(request.form['duedate']), request.form['descarea'], request.form['status'])
+                })
             return redirect('/home')
         else:
             return render_template("error.html", error="failed to update task!")
@@ -195,7 +267,14 @@ def create_app():
     @usermanager.hasWritePermission
     def delete(id):
         response = todo.delete_task(id=id)
-        if str(response) != "":
+        if response is not None: 
+            if current_app.config["LOGIN_DISABLED"]==False:
+                app.logger.info("{} deleted task".format(current_user.id), extra={
+                    "method": "{}".format(request.method),
+                    "requesterIpAddr": "{}".format(request.remote_addr),
+                    "url": "{}".format(request.url),
+                    "data": "id: {}".format(id)
+                })
             return redirect('/home')
         else:
             return render_template("error.html",error="failed to delete task!") 
@@ -242,7 +321,7 @@ def create_app():
     @usermanager.hasRoleAdmin
     def get_edituser(id):
         item = usermanager.get_user(id=id)
-        if (str(item) != ""):
+        if item is not None:
             item_info = User(item)
             return render_template('editUser.html', user=item_info)
         else:
@@ -258,7 +337,13 @@ def create_app():
             username = request.form['username'],
             role = request.form['role']
         )
-        if (str(response) != ""):
+        if response is not None:
+            app.logger.info("{} updated user permission".format(current_user.id), extra={
+                "method": "{}".format(request.method),
+                "requesterIpAddr": "{}".format(request.remote_addr),
+                "url": "{}".format(request.url),
+                "data": "id: {} username: {} role: {}".format(id, request.form['username'], request.form['role'])
+            })
             return redirect('/usermanager')
         else:
             return render_template("error.html", error="failed to update user!")
@@ -269,7 +354,13 @@ def create_app():
     @usermanager.hasRoleAdmin
     def deleteuser(id):
         response = usermanager.delete_user(id=id)
-        if str(response) != "":
+        if response is not None:
+            app.logger.info("{} deleted user".format(current_user.id), extra={
+                "method": "{}".format(request.method),
+                "requesterIpAddr": "{}".format(request.remote_addr),
+                "url": "{}".format(request.url),
+                "data": "id: {}".format(id)
+            })
             return redirect('/usermanager')
         else:
             return render_template("error.html",error="failed to delete user!")

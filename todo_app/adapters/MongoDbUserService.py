@@ -3,7 +3,6 @@ from bson.objectid import ObjectId
 from flask import  render_template, current_app
 from flask_login import current_user
 
-
 class Connection():    
     def __init__(self): 
         self.mongo_connection_string = os.environ['MONGO_CONNECTION_STRING']
@@ -11,8 +10,9 @@ class Connection():
         self.client = pymongo.MongoClient(self.mongo_connection_string, ssl_cert_reqs=ssl.CERT_NONE)
         self.mongo_db = self.client.todo_app
         self.collection = self.mongo_db.users
-        
+       
 class MongoDbUserService(Connection):
+
     def get_totalusercount(self):
         return self.collection.find().count()
     
@@ -64,6 +64,7 @@ class MongoDbUserService(Connection):
                 for item in results:
                     if item['role'] != 'admin':
                         return render_template("access_error.html",error="insufficient privileges!")
+                        
                 return func(*args, **kwargs)
             else:
                 return render_template("error.html",error="Contact support for help.")
