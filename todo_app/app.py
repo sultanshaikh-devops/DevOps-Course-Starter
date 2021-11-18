@@ -1,16 +1,15 @@
-import os
+import os, requests
 from todo_app.models.view import ViewModel
 from todo_app.models.card import Card
 from todo_app.models.user import User
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from todo_app.adapters.mongodb_todo import *
-from todo_app.adapters.mongodb_user import *
+from todo_app.adapters.MongoDbUserService import *
 
 #Login
-from flask_dance.contrib.github import make_github_blueprint, github
 from flask_login import UserMixin, current_user, LoginManager, login_required, login_user, logout_user
-from flask_dance.consumer import oauth_authorized
+from oauthlib.oauth2 import WebApplicationClient
 
 class ReverseProxied(object):
     def __init__(self, app):
@@ -32,12 +31,15 @@ def create_app():
     app.config.from_object('todo_app.flask_config.Config')
     app.wsgi_app = ReverseProxied(app.wsgi_app)
 
-    #os.environ['OAUTHLIB_INSECURE_TRANSPORT']
-    gh_blueprint = make_github_blueprint(client_id=os.environ['GITHUB_CLIENT_ID'], client_secret=os.environ['GITHUB_CLIENT_SECRET'])
-    app.register_blueprint(gh_blueprint, url_prefix='/github_login')
+    client_id = os.environ['GITHUB_CLIENT_ID']
+    client_secret = os.environ['GITHUB_CLIENT_SECRET']
+    base_url="https://api.github.com"
+    authorization_url="https://github.com/login/oauth/authorize"
+    token_endpoint = "https://github.com/login/oauth/access_token"
 
+    client = WebApplicationClient(client_id)
     todo = mongodb_todo()
-    usermanager = mongodb_user()
+    usermanager = MongoDbUserService()
 
     login_manager = LoginManager()
     login_manager.init_app(app)
@@ -48,34 +50,69 @@ def create_app():
     
     @login_manager.unauthorized_handler
     def unauthenticated():
-        return redirect(url_for('github_login'))
+        return redirect(url_for('login'))
     
     @app.route('/logout')
     @login_required
     def logout():
         logout_user()
-        session.clear()
-        
-        github.blueprint.teardown_session
-        #return redirect(url_for('github.login'))
-        return render_template("close.html")
+        session.clear()        
+        return redirect("https://github.com/logout")
     
-    @app.route('/', methods=['GET'])
-    def github_login():
-        if not github.authorized:
-            return redirect(url_for('github.login')) 
-        account_info = github.get('/user')   
-        if account_info.ok:
-            account_info_json = account_info.json()
-            currentUserName = str(account_info_json['login'])                
+    @app.route("/login")
+    def login():
+        request_uri = client.prepare_request_uri(
+            authorization_url,
+            redirect_uri=request.base_url + "/callback",
+            scope=None,
+        )
+        return redirect(request_uri)
+
+    @app.route("/login/callback")
+    def callback():
+        code = request.args.get("code")
+
+        # Prepare and send request to get tokens! 
+        token_url, headers, body = client.prepare_token_request(
+            token_endpoint,
+            authorization_response=request.url,
+            redirect_url=request.base_url,
+            code=code,
+        )
+
+        token_response = requests.post(
+            token_url,
+            headers=headers,
+            data=body,
+            auth=(client_id, client_secret),
+        )
+
+        if token_response.status_code != 200:
+            return redirect(url_for('login'))
+
+        json_data = token_response.content.decode('utf8').replace("'", '"')
+        # Parse the tokens!
+        client.parse_request_body_response(json_data)
+        userinfo_endpoint = "{}/user".format(base_url)
+        uri, headers, body = client.add_token(userinfo_endpoint)
+        userinfo_response = requests.get(uri, headers=headers, data=body)
+        if userinfo_response.ok:
+            account_info_json = userinfo_response.json()
+            currentUserName = str(account_info_json['login'])               
             login_user(UserToLogin(currentUserName))
-            
+
             if usermanager.get_totalusercount() == 0:
                 usermanager.create_user(username=currentUserName,role="admin")
             
             if (usermanager.get_totalusercount() > 0) and (usermanager.get_findusercount(qry={"username": currentUserName}) == 0):
                 usermanager.create_user(username=currentUserName,role="read")
 
+        return redirect(url_for('get_index'))
+
+
+    @app.route('/', methods=['GET'])
+    @login_required
+    def sendhome():
         return redirect(url_for('get_index'))
 
 
@@ -97,7 +134,7 @@ def create_app():
         if (app.config['LOGIN_DISABLED']):
             userRole = False
         else:
-            userRole = usermanager.IsDisable(current_user.id)
+            userRole = usermanager.IsDisable()
 
         for item in items:
             cardslist.append(Card(item))
@@ -107,83 +144,72 @@ def create_app():
   
     @app.route('/new', methods=['GET'])   # New Task
     @login_required
+    @usermanager.hasWritePermission
     def getnew_post():
-        if (app.config['LOGIN_DISABLED']) or (usermanager.IsRoleAdmin(current_user.id)) or (usermanager.IsRoleWriter(current_user.id)):
-            return render_template('new_task.html')
-        return render_template("access_error.html",error="insufficient privileges!")
-
+        return render_template('new_task.html')
 
     @app.route('/home', methods=['POST'])   # New Task
     @login_required
+    @usermanager.hasWritePermission
     def post_index():
-        if (app.config['LOGIN_DISABLED']) or (usermanager.IsRoleAdmin(current_user.id)) or (usermanager.IsRoleWriter(current_user.id)):
-            response = todo.create_task(
-                name = request.form['title'],
-                due = request.form['duedate'],
-                desc = request.form['descarea']
-            )        
-            if (str(response) != ""):
-                return redirect('/home')
-            else:
-                return render_template("error.html",error="failed to create task!")
-        
-        return render_template("access_error.html",error="insufficient privileges!")
+        response = todo.create_task(
+            name = request.form['title'],
+            due = request.form['duedate'],
+            desc = request.form['descarea']
+        )        
+        if (str(response) != ""):
+            return redirect('/home')
+        else:
+            return render_template("error.html",error="failed to create task!")
 
     
     @app.route('/edit/<id>', methods=['GET']) #Edit task
     @login_required
+    @usermanager.hasWritePermission
     def get_edit(id):
-        if (app.config['LOGIN_DISABLED']) or (usermanager.IsRoleAdmin(current_user.id)) or (usermanager.IsRoleWriter(current_user.id)):
-            item = todo.get_task(id=id)
-            if (str(item) != ""):
-                item_info = Card(item)
-                return render_template('edit.html', task=item_info)
-            else:
-                return render_template("error.html", error="failed to obtain task info!")
-        return render_template("access_error.html",error="insufficient privileges!")
+        item = todo.get_task(id=id)
+        if (str(item) != ""):
+            item_info = Card(item)
+            return render_template('edit.html', task=item_info)
+        else:
+            return render_template("error.html", error="failed to obtain task info!")
 
     @app.route('/edit/<id>', methods=['POST']) #Edit task
     @login_required
+    @usermanager.hasWritePermission
     def post_edit(id):
-        if (app.config['LOGIN_DISABLED']) or (usermanager.IsRoleAdmin(current_user.id)) or (usermanager.IsRoleWriter(current_user.id)):
-            response= todo.update_task(
-                id = id,
-                name = request.form['title'],
-                desc = request.form['descarea'],
-                due = request.form['duedate'],
-                status = request.form['status']
-            )
-            if (str(response) != ""):
-                return redirect('/home')
-            else:
-                return render_template("error.html", error="failed to update task!")
-        return render_template("access_error.html",error="insufficient privileges!")
+        response= todo.update_task(
+            id = id,
+            name = request.form['title'],
+            desc = request.form['descarea'],
+            due = request.form['duedate'],
+            status = request.form['status']
+        )
+        if (str(response) != ""):
+            return redirect('/home')
+        else:
+            return render_template("error.html", error="failed to update task!")
     
     @app.route('/delete/<id>') # delete task
     @login_required
+    @usermanager.hasWritePermission
     def delete(id):
-        if (app.config['LOGIN_DISABLED']) or (usermanager.IsRoleAdmin(current_user.id)) or (usermanager.IsRoleWriter(current_user.id)):
-            response = todo.delete_task(id=id)
-            if str(response) != "":
-                return redirect('/home')
-            else:
-                return render_template("error.html",error="failed to delete task!") 
-        return render_template("access_error.html",error="insufficient privileges!")
+        response = todo.delete_task(id=id)
+        if str(response) != "":
+            return redirect('/home')
+        else:
+            return render_template("error.html",error="failed to delete task!") 
     
     ### Additional views ###
     @app.route('/getpreviousdonetasks', methods=['GET'])
     @login_required
     def get_previous_done_tasks():
         cardslist = []
-        qry = {
-            "status": "Done",
-            "dateLastActivity": {"$lt": datetime.datetime.strptime((datetime.date.today()).strftime("%Y-%m-%d"), '%Y-%m-%d')}    
-        }
-        items = todo.get_qryItems(qry)
+        items = todo.get_older_done_task()
         for item in items:
             cardslist.append(Card(item))
         item_view_model = ViewModel(cardslist)
-        userRole = usermanager.IsDisable(current_user.id)
+        userRole = usermanager.IsDisable()
         return render_template('previous_done_task.html', view_model=item_view_model, strRole=userRole)
 
     
@@ -191,68 +217,62 @@ def create_app():
     @login_required
     def get_today_done_tasks():
         cardslist = []
-        qry = {
-            "status": "Done",
-            "dateLastActivity": datetime.datetime.strptime((datetime.date.today()).strftime("%Y-%m-%d"), '%Y-%m-%d')    
-        }
-        items = todo.get_qryItems(qry)
+        items = todo.get_today_done_task()
         for item in items:
             cardslist.append(Card(item))
         item_view_model = ViewModel(cardslist)
-        userRole = usermanager.IsDisable(current_user.id)
+        userRole = usermanager.IsDisable()
         return render_template('today_done_task.html', view_model=item_view_model, strRole=userRole)
 
 ############# UserManagement ##########################
 
     @app.route('/usermanager', methods=['GET'])  #portal
     @login_required
+    @usermanager.hasRoleAdmin
     def get_usermanager():
-        if usermanager.IsRoleAdmin(current_user.id):
-            user_list = []
-            items = usermanager.get_AllUsers()
-            for item in items:
-                user_list.append(User(item))
-            item_view_model = ViewModel(user_list)
-            return render_template('userManager.html', view_model=item_view_model)        
-        return render_template("access_error.html",error="insufficient privileges!")
+        user_list = []
+        items = usermanager.get_AllUsers()
+        for item in items:
+            user_list.append(User(item))
+        item_view_model = ViewModel(user_list)
+        return render_template('userManager.html', view_model=item_view_model)        
     
     @app.route('/edituser/<id>', methods=['GET']) #Edit user
     @login_required
+    @usermanager.hasRoleAdmin
     def get_edituser(id):
-        if usermanager.IsRoleAdmin(current_user.id):
-            item = usermanager.get_user(id=id)
-            if (str(item) != ""):
-                item_info = User(item)
-                return render_template('editUser.html', user=item_info)
-            else:
-                return render_template("error.html", error="failed to obtain user info!")
-        return render_template("access_error.html",error="insufficient privileges!")
+        item = usermanager.get_user(id=id)
+        if (str(item) != ""):
+            item_info = User(item)
+            return render_template('editUser.html', user=item_info)
+        else:
+            return render_template("error.html", error="failed to obtain user info!")
+
     
     @app.route('/edituser/<id>', methods=['POST']) #Edit user
     @login_required
+    @usermanager.hasRoleAdmin
     def post_edituser(id):
-        if usermanager.IsRoleAdmin(current_user.id):
-            response= usermanager.update_user(
-                id = id,
-                username = request.form['username'],
-                role = request.form['role']
-            )
-            if (str(response) != ""):
-                return redirect('/usermanager')
-            else:
-                return render_template("error.html", error="failed to update user!")
-        return render_template("access_error.html",error="insufficient privileges!")
+        response = usermanager.update_user(
+            id = id,
+            username = request.form['username'],
+            role = request.form['role']
+        )
+        if (str(response) != ""):
+            return redirect('/usermanager')
+        else:
+            return render_template("error.html", error="failed to update user!")
+
     
     @app.route('/deleteuser/<id>') # delete user
     @login_required
+    @usermanager.hasRoleAdmin
     def deleteuser(id):
-        if usermanager.IsRoleAdmin(current_user.id):
-            response = usermanager.delete_user(id=id)
-            if str(response) != "":
-                return redirect('/usermanager')
-            else:
-                return render_template("error.html",error="failed to delete user!")
-        return render_template("access_error.html",error="insufficient privileges!")  
+        response = usermanager.delete_user(id=id)
+        if str(response) != "":
+            return redirect('/usermanager')
+        else:
+            return render_template("error.html",error="failed to delete user!")
 
 ###############################################
       

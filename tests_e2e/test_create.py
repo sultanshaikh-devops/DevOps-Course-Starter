@@ -16,8 +16,8 @@ def app_with_temp_board():
     load_dotenv(file_path, override=True)
     os.environ['LOGIN_DISABLED']="True"
 
-    # Create the new collection and save env to file   
-    os.environ['MONGODB_COLLECTIONNAME'] = "tasks"
+    # Create the new collection and save env to file
+    os.environ['MONGODB_COLLECTION_NAME'] = "tasks"   
     
     # construct the new application
     application = app.create_app()
@@ -59,7 +59,7 @@ def test_create_task(driver, app_with_temp_board):
 
 @pytest.mark.depends(on=['test_create_task'])
 def test_complete_task(driver, app_with_temp_board):
-    updatestatus = driver.find_element_by_id('todo_edit') #driver.find_element_by_xpath("//a[contains(text(), 'Edit')]")
+    updatestatus = driver.find_element_by_id('todo_edit')
     updatestatus.click()
     status_element = driver.find_element_by_id('status')
     status_element.send_keys(Keys.DOWN)
@@ -69,7 +69,7 @@ def test_complete_task(driver, app_with_temp_board):
 
 @pytest.mark.depends(on=['test_complete_task'])
 def test_delete_task(driver, app_with_temp_board):
-    delete = driver.find_element_by_id('doing_delete') # driver.find_element_by_xpath("//a[contains(text(), 'Delete')]")
+    delete = driver.find_element_by_id('doing_delete') 
     delete.click()
     driver.implicitly_wait(10)   
     assert "E2E Testing Task 2" not in driver.page_source

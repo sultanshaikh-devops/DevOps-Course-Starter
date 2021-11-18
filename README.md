@@ -5,6 +5,37 @@
 ![GitHub](https://img.shields.io/github/license/sultanshaikh-devops/DevOps-Course-Starter)
 ![GitHub last commit](https://img.shields.io/github/last-commit/sultanshaikh-devops/DevOps-Course-Starter)
 
+## Module 12
+----
+Application URL: https://prod-ss-todo-app.azurewebsites.net
+
+In this module application and database has been moved to Azure Cloud. Travis CI has been configured to make use of Terraform configuration to deploy two separate environment, one for validation (test) and other production. These are hard coded with prefix 'test' and 'prod'
+
+* Travis-CI must have following variables configured:
+  * ARM_CLIENT_ID
+  * ARM_CLIENT_SECRET
+  * ARM_SUBSCRIPTION_ID
+  * ARM_TENANT_ID
+  * DOCKER_USERNAME
+  * DOCKER_PASSWORD
+  * PROD_GITHUB_CLIENT_ID
+  * PROD_GITHUB_CLIENT_SECRET
+  * MONGO_CONNECTION_STRING # for you can set any value.
+  * MONGODB_COLLECTION_NAME
+  * SECRET_KEY
+  * TF_VERSION = 0.14.7              
+  * WEBHOOK_URL             # set any value
+  * RESOURCE_GROUP_NAME     #Azure Resource Group Name
+  * LOCATION                # i.e uksouth
+
+Next step make sure you have setup OAth App correctly:
+  * Homepage URL: https://prod-ss-todo-app.azurewebsites.net/
+  * Authorization callback URL: https://prod-ss-todo-app.azurewebsites.net/login/callback
+
+* Update Terraform files (prod.tf and test.tf) to support {backend "azurerm"}, located inside folder terraform_env:
+* User Manager and logout options is located under top right-hand corner menu drop-down.
+
+
 ## Module 11
 ----
 Mongodb instance hosted on azure.

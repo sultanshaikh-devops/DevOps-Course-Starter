@@ -10,7 +10,7 @@ class ViewModel:
     
     @property
     def todo(self):
-        _todo_ls = [item for item in self._items if item.status == "To Do"]
+        _todo_ls = [item for item in self._items if item.status == "To Do"] 
         return _todo_ls
 
     @property

@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 class Connection():    
     def __init__(self): 
         self.mongo_connection_string = os.environ['MONGO_CONNECTION_STRING']
-        self.mongo_collection_name = os.environ['MONGODB_COLLECTIONNAME']
+        self.mongo_collection_name = os.environ['MONGODB_COLLECTION_NAME']
         self.client = pymongo.MongoClient(self.mongo_connection_string, ssl_cert_reqs=ssl.CERT_NONE)
         self.mongo_db = self.client.todo_app
         self.collection = self.mongo_db[self.mongo_collection_name]
@@ -46,5 +46,20 @@ class mongodb_todo(Connection):
     
     def get_task(self, id):
         return self.collection.find_one({"_id": ObjectId(id)})
+    
+    def get_today_done_task(self):
+        qry = {
+            "status": "Done",
+            "dateLastActivity": datetime.datetime.strptime((datetime.date.today()).strftime("%Y-%m-%d"), '%Y-%m-%d')    
+        }
+
+        return self.get_qryItems(qry)
+    
+    def get_older_done_task(self):
+        qry = {
+            "status": "Done",
+            "dateLastActivity": {"$lt": datetime.datetime.strptime((datetime.date.today()).strftime("%Y-%m-%d"), '%Y-%m-%d')}    
+        }
+        return self.get_qryItems(qry)
     
     
