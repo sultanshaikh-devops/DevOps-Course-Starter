@@ -13,12 +13,11 @@ install:
 jobs:  
   include:
     - stage: Test
-      if: branch != master
       script:
-      - cd terraform_env/dev
+      - cd terraform_env
       - terraform init
-      - terraform plan -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME"
-      - terraform apply -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -auto-approve
+      - terrform workspace select dev
+      - terraform apply -var "location=$LOCATION" -var "RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME" -var "DOCKER_REGISTRY_SERVER_USERNAME=$dockerUsername" -var "DOCKER_REGISTRY_SERVER_PASSWORD=$dockerPassword" -var "GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID" -var "GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET" -var "MONGODB_COLLECTION_NAME=$MONGODB_COLLECTION_NAME" -var "SECRET_KEY=$SECRET_KEY" -var "LOGGLY_TOKEN=$LOGGLY_TOKEN" -var "LOG_LEVEL=DEBUG" -var "LOGIN_DISABLED=true" -auto-approve
       - export MONGO_CONNECTION_STRING="$(terraform output -raw test_cosmosdb_connection_string)"
       - cd ../..
       - docker-compose -f docker-compose-dev.yml up -d --build
@@ -30,18 +29,18 @@ jobs:
     - stage: Docker Push
       if: branch = master
       script:
-      - docker build --target production --tag $DOCKER_USERNAME/todo-app-prod:latest .
+      - docker build --target production --tag $DOCKER_USERNAME/todo-app-prod:prod .
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker push $DOCKER_USERNAME/todo-app-prod:latest
+      - docker push $DOCKER_USERNAME/todo-app-prod:prod
     - stage: Publish Production
       if: branch = master
       script:
       - cd terraform_env/prod
       - terraform init
-      - terraform plan -var "prefix=prod" -var "location=$LOCATION" -var "RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME" -var "DOCKER_REGISTRY_SERVER_USERNAME=$DOCKER_USERNAME" -var "DOCKER_REGISTRY_SERVER_PASSWORD=$DOCKER_PASSWORD" -var "GITHUB_CLIENT_ID=$PROD_GITHUB_CLIENT_ID" -var "GITHUB_CLIENT_SECRET=$PROD_GITHUB_CLIENT_SECRET" -var "MONGODB_COLLECTION_NAME=$MONGODB_COLLECTION_NAME" -var "SECRET_KEY=$SECRET_KEY" -var "LOGGLY_TOKEN=$LOGGLY_TOKEN" -var "LOG_LEVEL=$LOG_LEVEL"
-      - terraform apply -var "prefix=prod" -var "location=$LOCATION" -var "RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME" -var "DOCKER_REGISTRY_SERVER_USERNAME=$dockerUsername" -var "DOCKER_REGISTRY_SERVER_PASSWORD=$dockerPassword" -var "GITHUB_CLIENT_ID=$PROD_GITHUB_CLIENT_ID" -var "GITHUB_CLIENT_SECRET=$PROD_GITHUB_CLIENT_SECRET" -var "MONGODB_COLLECTION_NAME=$MONGODB_COLLECTION_NAME" -var "SECRET_KEY=$SECRET_KEY" -var "LOGGLY_TOKEN=$LOGGLY_TOKEN" -var "LOG_LEVEL=$LOG_LEVEL" -auto-approve
-      - export MONGO_CONNECTION_STRING="$(terraform output -raw cosmos_connection_string)"
-      - export WEBHOOK_URL="$(terraform output -raw cd_webhook)"
+      #- terraform plan -var "prefix=prod" -var "location=$LOCATION" -var "RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME" -var "DOCKER_REGISTRY_SERVER_USERNAME=$DOCKER_USERNAME" -var "DOCKER_REGISTRY_SERVER_PASSWORD=$DOCKER_PASSWORD" -var "GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID" -var "GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET" -var "MONGODB_COLLECTION_NAME=$MONGODB_COLLECTION_NAME" -var "SECRET_KEY=$SECRET_KEY" -var "LOGGLY_TOKEN=$LOGGLY_TOKEN" -var "LOG_LEVEL=$LOG_LEVEL"
+      - terraform apply -var "prefix=prod" -var "location=$LOCATION" -var "RESOURCE_GROUP_NAME=$RESOURCE_GROUP_NAME" -var "DOCKER_REGISTRY_SERVER_USERNAME=$dockerUsername" -var "DOCKER_REGISTRY_SERVER_PASSWORD=$dockerPassword" -var "GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID" -var "GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET" -var "MONGODB_COLLECTION_NAME=$MONGODB_COLLECTION_NAME" -var "SECRET_KEY=$SECRET_KEY" -var "LOGGLY_TOKEN=$LOGGLY_TOKEN" -var "LOG_LEVEL=$LOG_LEVEL" -auto-approve
+      #- export MONGO_CONNECTION_STRING="$(terraform output -raw cosmos_connection_string)"
+      #- export WEBHOOK_URL="$(terraform output -raw cd_webhook)"
     - stage: Web App Refresh
       if: branch = master
       script: bash ./webhook.sh

@@ -44,10 +44,10 @@ resource "azurerm_cosmosdb_account" "main" {
   lifecycle { prevent_destroy = false }
 }
 
-data "azurerm_cosmosdb_account" "main" {
-  name                = "${var.prefix}-cosmosdb-account"
-  resource_group_name = var.resource_group_name
-  depends_on = [
-    azurerm_cosmosdb_account.main,
-  ]
-}
+# data "azurerm_cosmosdb_account" "main" {
+#   name                = "${var.prefix}-cosmosdb-account"
+#   resource_group_name = var.resource_group_name
+#   depends_on = [
+#     azurerm_cosmosdb_account.main,
+#   ]
+# }

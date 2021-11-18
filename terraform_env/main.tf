@@ -1,23 +1,5 @@
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">= 2.49"
-    }
-  }
-  backend "azurerm" {
-    resource_group_name  = "OpenCohort1_SultanShaikh_ProjectExercise"
-    storage_account_name = "tfstate007ss"
-    container_name       = "tfstate007ss"
-    key                  = "terraform.tfstate"
-  }
-}
-provider "azurerm" {
-  features {}
-}
-
 resource "azurerm_cosmosdb_account" "main" {
-  name                = "${var.prefix}-cosmosdb-account"
+  name                = "${terraform.workspace}-ss-cosmosdb-account"
   resource_group_name = var.RESOURCE_GROUP_NAME
   location            = var.location
   offer_type          = "Standard"
@@ -41,7 +23,7 @@ resource "azurerm_cosmosdb_account" "main" {
     failover_priority = 0
   }
 
-  lifecycle { prevent_destroy = true }
+  lifecycle { prevent_destroy =  false }
 }
 
 # data "azurerm_cosmosdb_account" "main" {
@@ -58,7 +40,7 @@ resource "azurerm_cosmosdb_account" "main" {
 # }
 
 resource "azurerm_app_service_plan" "main" {
-  name                = "${var.prefix}-terraformed-asp"
+  name                = "${terraform.workspace}-ss-terraformed-asp"
   location            = var.location
   resource_group_name = var.RESOURCE_GROUP_NAME
   kind                = "Linux"
@@ -70,9 +52,9 @@ resource "azurerm_app_service_plan" "main" {
 }
 
 resource "azurerm_app_service" "main" {
-  name                = "${var.prefix}-ss-todo-app"
-  location            = data.azurerm_resource_group.main.location
-  resource_group_name = data.azurerm_resource_group.main.name
+  name                = "${terraform.workspace}-ss-todo-app"
+  location            = var.location
+  resource_group_name = var.RESOURCE_GROUP_NAME
   app_service_plan_id = azurerm_app_service_plan.main.id
   site_config {
     app_command_line = ""
@@ -81,7 +63,7 @@ resource "azurerm_app_service" "main" {
 
   app_settings = {
     "DOCKER_REGISTRY_SERVER_URL"          = var.DOCKER_REGISTRY_SERVER_URL
-    "MONGO_CONNECTION_STRING"             = "mongodb://${data.azurerm_cosmosdb_account.main.name}:${data.azurerm_cosmosdb_account.main.primary_key}@${data.azurerm_cosmosdb_account.main.name}.mongo.cosmos.azure.com:10255/DefaultDatabase?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${data.azurerm_cosmosdb_account.main.name}@"
+    "MONGO_CONNECTION_STRING"             = "mongodb://${azurerm_cosmosdb_account.main.name}:${azurerm_cosmosdb_account.main.primary_key}@${azurerm_cosmosdb_account.main.name}.mongo.cosmos.azure.com:10255/DefaultDatabase?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${azurerm_cosmosdb_account.main.name}@"
     "DOCKER_REGISTRY_SERVER_PASSWORD"     = var.DOCKER_REGISTRY_SERVER_PASSWORD
     "DOCKER_REGISTRY_SERVER_USERNAME"     = var.DOCKER_REGISTRY_SERVER_USERNAME
     "GITHUB_CLIENT_ID"                    = var.GITHUB_CLIENT_ID
@@ -92,9 +74,7 @@ resource "azurerm_app_service" "main" {
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = false
     "LOG_LEVEL"                           = var.LOG_LEVEL
     "LOGGLY_TOKEN"                        = var.LOGGLY_TOKEN
-
+    "LOGIN_DISABLED"                      = var.LOGIN_DISABLED
   }
   lifecycle { prevent_destroy = false }
 }
-
-

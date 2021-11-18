@@ -62,8 +62,8 @@ This module is about logging. Logs are written to loggly.com. Requested evidence
   * ARM_TENANT_ID
   * DOCKER_USERNAME
   * DOCKER_PASSWORD
-  * PROD_GITHUB_CLIENT_ID
-  * PROD_GITHUB_CLIENT_SECRET
+  * GITHUB_CLIENT_ID
+  * GITHUB_CLIENT_SECRET
   * MONGO_CONNECTION_STRING # for you can set any value.
   * MONGODB_COLLECTION_NAME
   * SECRET_KEY
@@ -88,8 +88,8 @@ In this module application and database has been moved to Azure Cloud. Travis CI
   * ARM_TENANT_ID
   * DOCKER_USERNAME
   * DOCKER_PASSWORD
-  * PROD_GITHUB_CLIENT_ID
-  * PROD_GITHUB_CLIENT_SECRET
+  * GITHUB_CLIENT_ID
+  * GITHUB_CLIENT_SECRET
   * MONGO_CONNECTION_STRING # for you can set any value.
   * MONGODB_COLLECTION_NAME
   * SECRET_KEY

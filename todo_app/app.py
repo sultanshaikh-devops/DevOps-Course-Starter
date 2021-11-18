@@ -51,6 +51,15 @@ def create_app():
     login_manager = LoginManager()
     login_manager.init_app(app)
 
+    def write_log_entry(message, method, requesterIpAddr, url, status_code, data):
+        app.logger.error(message, extra={
+            "method": "{}".format(method),
+            "requesterIpAddr": "{}".format(requesterIpAddr),
+            "url": "{}".format(url),
+            "status_code": "{}".format(status_code),
+            "data": "{}".format(data)
+        })
+
 
     @app.errorhandler(Exception)
     def handle_error(e):
@@ -64,12 +73,13 @@ def create_app():
     
     @app.after_request
     def after_request(response):
-        app.logger.info("after_request", extra={
-            "method": "{}".format(request.method),
-            "requesterIpAddr": "{}".format(request.remote_addr),
-            "url": "{}".format(request.url),
-            "status_code": "{}".format(response.status)
-        })
+        write_log_entry('after_request',request.method,request.remote_addr,request.url,response.status,"")
+        # app.logger.info("after_request", extra={
+        #     "method": "{}".format(request.method),
+        #     "requesterIpAddr": "{}".format(request.remote_addr),
+        #     "url": "{}".format(request.url),
+        #     "status_code": "{}".format(response.status)
+        # })
         return response
 
     @login_manager.user_loader
@@ -78,21 +88,23 @@ def create_app():
     
     @login_manager.unauthorized_handler
     def unauthenticated():
-        app.logger.info("Unauthorized attemp made.", extra={
-            "method": "{}".format(request.method),
-            "requesterIpAddr": "{}".format(request.remote_addr),
-            "url": "{}".format(request.url)
-        })
+        write_log_entry('Unauthorized attemp made',request.method,request.remote_addr,request.url,"None","None")
+        # app.logger.info("Unauthorized attemp made.", extra={
+        #     "method": "{}".format(request.method),
+        #     "requesterIpAddr": "{}".format(request.remote_addr),
+        #     "url": "{}".format(request.url)
+        # })
         return redirect(url_for('login'))
     
     @app.route('/logout')
     @login_required
     def logout():
-        app.logger.info("User {} logged out of the system.".format(current_user.id), extra={
-            "method": "{}".format(request.method),
-            "requesterIpAddr": "{}".format(request.remote_addr),
-            "url": "{}".format(request.url)
-        })
+        write_log_entry("User {} logged out of the system.".format(current_user.id),request.method,request.remote_addr,request.url,"None","None")
+        # app.logger.info("User {} logged out of the system.".format(current_user.id), extra={
+        #     "method": "{}".format(request.method),
+        #     "requesterIpAddr": "{}".format(request.remote_addr),
+        #     "url": "{}".format(request.url)
+        # })
         logout_user()
         session.clear()        
         return redirect("https://github.com/logout")
@@ -131,6 +143,11 @@ def create_app():
         )
 
         if token_response.status_code != 200:
+            app.logger.warning("Unable to get token from github.", extra={
+                "method": "{}".format(request.method),
+                "requesterIpAddr": "{}".format(request.remote_addr),
+                "url": "{}".format(request.url)
+            })
             return redirect(url_for('login'))
 
         json_data = token_response.content.decode('utf8').replace("'", '"')
@@ -151,19 +168,21 @@ def create_app():
 
             if usermanager.get_totalusercount() == 0:
                 usermanager.create_user(username=currentUserName,role="admin")
-                app.logger.info("User logged in {} has been give admin level access.".format(current_user.id), extra={
-                    "method": "{}".format(request.method),
-                    "requesterIpAddr": "{}".format(request.remote_addr),
-                    "url": "{}".format(request.url)
-                })
+                write_log_entry("User logged in {} has been give admin level access.".format(current_user.id),request.method,request.remote_addr,request.url,"None", "None")
+                # app.logger.info("User logged in {} has been give admin level access.".format(current_user.id), extra={
+                #     "method": "{}".format(request.method),
+                #     "requesterIpAddr": "{}".format(request.remote_addr),
+                #     "url": "{}".format(request.url)
+                # })
             
             if (usermanager.get_totalusercount() > 0) and (usermanager.get_findusercount(qry={"username": currentUserName}) == 0):
                 usermanager.create_user(username=currentUserName,role="read")
-                app.logger.info("User logged in {} has been give read level access.".format(current_user.id), extra={
-                    "method": "{}".format(request.method),
-                    "requesterIpAddr": "{}".format(request.remote_addr),
-                    "url": "{}".format(request.url)
-                })
+                write_log_entry("User logged in {} has been give read level access.".format(current_user.id),request.method,request.remote_addr,request.url,"None", "None")
+                # app.logger.info("User logged in {} has been give read level access.".format(current_user.id), extra={
+                #     "method": "{}".format(request.method),
+                #     "requesterIpAddr": "{}".format(request.remote_addr),
+                #     "url": "{}".format(request.url)
+                # })
 
         return redirect(url_for('get_index'))
 
@@ -217,12 +236,13 @@ def create_app():
         )        
         if response is not None:
             if current_app.config["LOGIN_DISABLED"]==False:
-                app.logger.info("{} create new task".format(current_user.id), extra={
-                    "method": "{}".format(request.method),
-                    "requesterIpAddr": "{}".format(request.remote_addr),
-                    "url": "{}".format(request.url),
-                    "data": "name: {} due: {} desc: {}".format(request.form['title'], str(request.form['duedate']), request.form['descarea'])
-                })
+                write_log_entry("{} create new task".format(current_user.id),request.method,request.remote_addr,request.url,"None","name: {} due: {} desc: {}".format(request.form['title'], str(request.form['duedate']), request.form['descarea']))
+                # app.logger.info("{} create new task".format(current_user.id), extra={
+                #     "method": "{}".format(request.method),
+                #     "requesterIpAddr": "{}".format(request.remote_addr),
+                #     "url": "{}".format(request.url),
+                #     "data": "name: {} due: {} desc: {}".format(request.form['title'], str(request.form['duedate']), request.form['descarea'])
+                # })
             return redirect('/home')
         else:
             return render_template("error.html",error="failed to create task!")
@@ -252,12 +272,13 @@ def create_app():
         )
         if response is not None:
             if current_app.config["LOGIN_DISABLED"]==False:
-                app.logger.info("{} update task".format(current_user.id), extra={
-                    "method": "{}".format(request.method),
-                    "requesterIpAddr": "{}".format(request.remote_addr),
-                    "url": "{}".format(request.url),
-                    "data": "id: {} name: {} due: {} desc: {} status: {}".format(id, request.form['title'], str(request.form['duedate']), request.form['descarea'], request.form['status'])
-                })
+                write_log_entry("{} update task".format(current_user.id),request.method,request.remote_addr,request.url,"None","id: {} name: {} due: {} desc: {} status: {}".format(id, request.form['title'], str(request.form['duedate']), request.form['descarea'], request.form['status']))
+                # app.logger.info("{} update task".format(current_user.id), extra={
+                #     "method": "{}".format(request.method),
+                #     "requesterIpAddr": "{}".format(request.remote_addr),
+                #     "url": "{}".format(request.url),
+                #     "data": "id: {} name: {} due: {} desc: {} status: {}".format(id, request.form['title'], str(request.form['duedate']), request.form['descarea'], request.form['status'])
+                # })
             return redirect('/home')
         else:
             return render_template("error.html", error="failed to update task!")
@@ -269,12 +290,13 @@ def create_app():
         response = todo.delete_task(id=id)
         if response is not None: 
             if current_app.config["LOGIN_DISABLED"]==False:
-                app.logger.info("{} deleted task".format(current_user.id), extra={
-                    "method": "{}".format(request.method),
-                    "requesterIpAddr": "{}".format(request.remote_addr),
-                    "url": "{}".format(request.url),
-                    "data": "id: {}".format(id)
-                })
+                write_log_entry("{} deleted task".format(current_user.id),request.method,request.remote_addr,request.url,"None","id: {}".format(id))
+                # app.logger.info("{} deleted task".format(current_user.id), extra={
+                #     "method": "{}".format(request.method),
+                #     "requesterIpAddr": "{}".format(request.remote_addr),
+                #     "url": "{}".format(request.url),
+                #     "data": "id: {}".format(id)
+                # })
             return redirect('/home')
         else:
             return render_template("error.html",error="failed to delete task!") 
@@ -338,12 +360,13 @@ def create_app():
             role = request.form['role']
         )
         if response is not None:
-            app.logger.info("{} updated user permission".format(current_user.id), extra={
-                "method": "{}".format(request.method),
-                "requesterIpAddr": "{}".format(request.remote_addr),
-                "url": "{}".format(request.url),
-                "data": "id: {} username: {} role: {}".format(id, request.form['username'], request.form['role'])
-            })
+            write_log_entry("{} updated user permission".format(current_user.id),request.method,request.remote_addr,request.url,"None","id: {} username: {} role: {}".format(id, request.form['username'], request.form['role']))
+            # app.logger.info("{} updated user permission".format(current_user.id), extra={
+            #     "method": "{}".format(request.method),
+            #     "requesterIpAddr": "{}".format(request.remote_addr),
+            #     "url": "{}".format(request.url),
+            #     "data": "id: {} username: {} role: {}".format(id, request.form['username'], request.form['role'])
+            # })
             return redirect('/usermanager')
         else:
             return render_template("error.html", error="failed to update user!")
@@ -355,12 +378,13 @@ def create_app():
     def deleteuser(id):
         response = usermanager.delete_user(id=id)
         if response is not None:
-            app.logger.info("{} deleted user".format(current_user.id), extra={
-                "method": "{}".format(request.method),
-                "requesterIpAddr": "{}".format(request.remote_addr),
-                "url": "{}".format(request.url),
-                "data": "id: {}".format(id)
-            })
+            write_log_entry("{} deleted user".format(current_user.id),request.method,request.remote_addr,request.url,"None","id: {}".format(id))
+            # app.logger.info("{} deleted user".format(current_user.id), extra={
+            #     "method": "{}".format(request.method),
+            #     "requesterIpAddr": "{}".format(request.remote_addr),
+            #     "url": "{}".format(request.url),
+            #     "data": "id: {}".format(id)
+            # })
             return redirect('/usermanager')
         else:
             return render_template("error.html",error="failed to delete user!")

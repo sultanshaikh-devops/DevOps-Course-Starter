@@ -1,14 +1,13 @@
-variable "prefix" {
-  type        = string
-  description = "The prefix used for all resources in this environment"
-}
-
 variable "location" {
   type        = string
   description = "The Azure location where all resources in this  deployment should be created"
 }
 
-
+variable "LOGIN_DISABLED" {
+  type        = bool
+  description = "The Azure location where all resources in this  deployment should be created"
+  default     = false
+}
 variable "DOCKER_REGISTRY_SERVER_URL" {
   type        = string
   description = "The docker url"

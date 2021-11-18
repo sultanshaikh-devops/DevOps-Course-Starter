@@ -1,11 +1,11 @@
-import os, pytest, requests, time
+import os, pytest#, requests, time
 from threading import Thread
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
+#from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from dotenv import find_dotenv, load_dotenv
 import todo_app.app as app
-import pymongo
+#import pymongo
 # from todo_app.mongodbclient import *
 from todo_app.adapters.mongodb_todo import *
 
@@ -41,11 +41,11 @@ def driver():
 
 #test entries
 def test_task_journey(driver, app_with_temp_board):
-    driver.get('http://localhost:5000/home')
+    driver.get('https://dev-ss-todo-app.azurewebsites.net/home')
     assert driver.title == 'To-Do App' 
 
 def test_create_task(driver, app_with_temp_board):
-    driver.get('http://localhost:5000/new')
+    driver.get('https://dev-ss-todo-app.azurewebsites.net/new')
     title_element = driver.find_element_by_id('title')
     title_element.send_keys("E2E Testing Task 1")
 
