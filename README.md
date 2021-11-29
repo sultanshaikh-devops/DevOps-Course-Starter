@@ -5,6 +5,51 @@
 ![GitHub](https://img.shields.io/github/license/sultanshaikh-devops/DevOps-Course-Starter)
 ![GitHub last commit](https://img.shields.io/github/last-commit/sultanshaikh-devops/DevOps-Course-Starter)
 
+## Module 14
+----
+Application URL: http://127.0.0.1:5000/
+
+In this module we are using Minikube (is a version of Kubernetes).
+Following are required softwares.
+* Docker Desktop or Docker Engine
+* Kubectl
+* Minikube
+* Locally installed mongodb community edition
+
+Getting started:
++ Setting up oAuth on GitHub:
+  + Home page URL: http://127.0.0.1:5000
+  + Authorization callback URL: http://127.0.0.1:5000/login/callback
++ After mongodb installed create a database called todo_app and collection name lists.
++ Create a new docker image
+  ```bash
+  $ docker build --target production --tag todo-app:prod .
+  ```
++ start minikube
+  ```bash
+  $ minikube start
+  ```
++ Upload docker image
+  ```bash
+  $ minikube image load todo-app:prod
+  ```
+
++ Update the values before running, after the = sign. MONGO_CONNECTION_STRING value must inside " " as example below. This will load all required variables.  
+  ```bash
+  $ kubectl create secret generic todo-secret --from-literal=LOGGLY_TOKEN= --from-literal=SECRET_KEY= --from-literal=GITHUB_CLIENT_ID= --from-literal=GITHUB_CLIENT_SECRET= --from-literal=MONGO_CONNECTION_STRING="mongodb://host.minikube.internal:27017/todo_app?retryWrites=true&w=majority&ssl=false" --from-literal=MONGODB_COLLECTION_NAME=lists
+  ```
+
++ Load deployment and service.  
+  ```bash
+  $ kubectl apply -f ./k8s/todo_deploy.yaml
+  $ kubectl apply -f ./k8s/todo_service.yaml
+  ```
++ run port-forward command  
+  ```bash
+  $ kubectl port-forward service/todo 5000:5000
+  ```
+
+
 ## Module 13
 ----
 Application URL: https://prod-ss-todo-app.azurewebsites.net

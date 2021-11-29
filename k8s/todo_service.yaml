@@ -1,0 +1,13 @@
+# service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: todo
+spec:
+  type: NodePort
+  selector:
+    app: todo
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000

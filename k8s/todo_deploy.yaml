@@ -1,0 +1,60 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-deploy
+spec:
+  selector:
+    matchLabels:
+      app: todo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: todo
+    spec:
+      hostAliases:
+      - ip: "192.168.65.2"
+        hostnames:
+        - "host.minikube.internal"
+      containers:
+        - name: todo-app-prod
+          image: todo-app:prod
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 5000
+          env:
+            - name: LOGGLY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: todo-secret
+                  key: LOGGLY_TOKEN
+            - name: LOG_LEVEL
+              value: "DEBUG"
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: todo-secret
+                  key: SECRET_KEY
+            - name: OAUTHLIB_INSECURE_TRANSPORT
+              value: "1"
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: todo-secret
+                  key: GITHUB_CLIENT_ID
+            - name: GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: todo-secret
+                  key: GITHUB_CLIENT_SECRET
+            - name: MONGO_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: todo-secret
+                  key: MONGO_CONNECTION_STRING
+            - name: MONGODB_COLLECTION_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: todo-secret
+                  key: MONGODB_COLLECTION_NAME

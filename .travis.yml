@@ -28,7 +28,7 @@ jobs:
       - cd ./terraform_env/dev
       - terraform destroy -var "prefix=test" -var "location=$LOCATION" -var "resource_group_name=$RESOURCE_GROUP_NAME" -auto-approve
     - stage: Docker Push
-      if: branch = master
+      if: branch != master
       script:
       - docker build --target production --tag $DOCKER_USERNAME/todo-app-prod:latest .
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin

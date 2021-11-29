@@ -11,15 +11,12 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 #Set working directory
 WORKDIR /app
 
-#copy poetry *.toml files
 COPY . /app
 RUN poetry config virtualenvs.create false
 
 #Production Stage
 FROM base as production
 RUN poetry config virtualenvs.create false --local && poetry install --no-root --no-dev
-#poetry install --no-root --no-dev
-COPY . /app
 EXPOSE 5000
 RUN chmod +x entrypoint.sh
 ENTRYPOINT ./entrypoint.sh
